@@ -1,0 +1,20 @@
+---
+php_memory_limit: "512M"
+php_max_execution_time: "300"
+php_max_input_vars: "3000"
+php_upload_max_filesize: "256M"
+php_session_cookie_lifetime: "20000"
+php_session_gc_maxlifetime: "20000"
+php_packages:
+  - php8.3
+  - php8.3-cli
+  - php8.3-common
+  - php8.3-gd
+  - php8.3-mbstring
+  - php8.3-pdo
+  - php8.3-apcu
+  - php8.3-xml
+  - php8.3-opcache
+  - php8.3-mysql
+  - php8.3-curl
+  - php8.3-intl

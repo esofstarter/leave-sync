@@ -1,0 +1,61 @@
+$input-config: kt-get($form-config, input);
+
+.form-input {
+
+  &__input {
+    width: 100%;
+    padding: kt-get($input-config, 'padding-y') kt-get($input-config, 'padding-x');
+    font-size: kt-get($form-config, 'font-size');
+    font-weight: kt-get($input-config, 'font-weight');
+    line-height: var(--dui-line-height);
+    color: var(--dui-color-body-text);
+    background-color: var(--dui-color-body-background);
+    background-clip: padding-box;
+    border: var(--dui-border);
+    border-radius: var(--dui-border-radius);
+
+    transition: kt-get($input-config, transition);
+
+    &:focus {
+      color: var(--dui-color-body-text);
+      background-color: var(--dui-color-body-background);
+      border-color: kt-get($input-config, color, focus);
+      outline: 0;
+
+      @if ($enable-shadows) {
+        box-shadow: var(--dui-focus-ring-box-shadow);
+      }
+    }
+
+    &--error,
+    &--error:focus {
+      border-color: kt-get($input-config, color, error);
+    }
+
+    &--inline {
+      flex: 1;
+    }
+  }
+
+  &__group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  &__attachment {
+    display: flex;
+    align-items: center;
+    padding: kt-get($input-config, 'padding-y') kt-get($input-config, 'padding-x');
+    font-size: var(--dui-font-size);
+    font-weight: var(--dui-font-weight-normal);
+    line-height: var(--dui-line-height);
+    color: var(--dui-color-body-text);
+    text-align: center;
+    white-space: nowrap;
+    background-color: var(--dui-color-tertiary-background);
+    border: var(--dui-border);
+    border-radius: var(--dui-border-radius);
+  }
+}

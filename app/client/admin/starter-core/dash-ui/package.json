@@ -1,0 +1,42 @@
+{
+  "name": "@starter-core/dash-ui",
+  "private": true,
+  "version": "1.0.3",
+  "author": "Pashata",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/dash-ui.js",
+  "module": "./dist/dash-ui.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build:package": "vite build",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly && tsc-alias -p tsconfig.json",
+    "build:production": "npm run build:package && npm run build:types",
+    "dev": "vitepress dev docs --host 0.0.0.0 --port=3030",
+    "start": "vitepress serve docs --host 0.0.0.0 --port=3030",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.2"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.4",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/tsconfig": "^0.5.1",
+    "sass": "^1.71.0",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.4",
+    "vitepress": "^1.0.0-rc.43",
+    "vue-tsc": "^1.8.27"
+  },
+  "files": [
+    "src",
+    "dist"
+  ]
+}

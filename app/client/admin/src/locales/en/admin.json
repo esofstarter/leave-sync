@@ -1,0 +1,29 @@
+{
+  "dashboard": "Dashboard",
+  "myprofile": "My Profile",
+  "users": {
+    "main": "Users",
+    "admin": "Admin Users",
+    "public": "Public Users",
+    "add": "Add user"
+  },
+  "leave_types": {
+    "main": "Leave Types",
+    "add": "Add Leave Type"
+  },
+  "national_holidays": {
+    "main": "Holidays",
+    "add": "Add Holidaty"
+  },
+  "leave_requests": {
+    "mine": "My Leave Requests",
+    "main": "Leave Requests",
+    "add": "New Request",
+    "all": "All Leave Requests",
+    "new": "New Leave Request"
+  },
+  "countries": {
+    "main": "Countries",
+    "add": "Add Country"
+  }
+}

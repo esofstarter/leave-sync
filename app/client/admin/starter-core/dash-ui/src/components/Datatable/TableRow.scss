@@ -1,0 +1,14 @@
+@import "utils";
+@import "skin";
+
+.kt-datatable__row {
+  $block: &;
+
+  table-layout: initial;
+  width: 100%;
+  border-bottom: 1px solid $row-border-color;
+
+  &--hover:not(#{$block}--active) {
+    transition: background 0.3s ease;
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "datatable": {
+        "slug": "Slug",
+        "name": "Name",
+        "is_paid": "Paid"
+    }
+}

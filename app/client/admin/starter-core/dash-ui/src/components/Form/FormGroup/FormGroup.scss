@@ -1,0 +1,42 @@
+$label-config: kt-get($form-config, label);
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: var(--dui-spacing-1);
+
+    &--inline {
+        flex-direction: row;
+    }
+
+    &__label {
+        display: block;
+        font-size: kt-get($form-config, 'font-size');
+        font-weight: var(--dui-font-weight-normal);
+        padding-top: kt-get($label-config, 'padding-y');
+        padding-bottom: kt-get($label-config, 'padding-y');
+    }
+
+    &__column {
+        $columnBlock: &;
+        width: 100%;
+
+        &--left {
+
+            &#{$columnBlock}--inline {
+                flex: 0 0 20%;
+                max-width: 20%;
+            }
+        }
+
+        &--right {
+
+            &#{$columnBlock}--inline {
+                flex: 0 0 80%;
+                max-width: 80%;
+            }
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "user_status": "User status",
+  "status": {
+    "label": "Disable Request Type",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "slug": {
+    "label": "Slug"
+  },
+  "name": {
+    "label": "Name"
+  },
+  "is_paid": {
+    "label": "Paid"
+  },
+  "basic": {
+    "information": "Basic information"
+  }
+}

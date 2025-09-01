@@ -1,0 +1,44 @@
+$label-config: kt-get($form-config, label);
+$input-config: kt-get($form-config, input);
+
+.form-dropdown {
+
+    &__input {
+        display: block;
+        width: 100%;
+        padding: kt-get($input-config, 'padding-y') kt-get($input-config, 'padding-x');
+        font-size: kt-get($form-config, 'font-size');
+        font-weight: kt-get($input-config, 'font-weight');
+        line-height: var(--dui-line-height);
+        color: var(--dui-color-body-text);
+        background-color: var(--dui-color-body-background);
+        background-clip: padding-box;
+        border: var(--dui-border);
+        border-radius: var(--dui-border-radius);
+
+        transition: kt-get($input-config, transition);
+
+        &:focus {
+            color: var(--dui-color-body-text);
+            background-color: var(--dui-color-body-background);
+            border-color: kt-get($input-config, color, focus);
+            outline: 0;
+
+            @if ($enable-shadows) {
+              box-shadow: var(--dui-focus-ring-box-shadow);
+            }
+        }
+    }
+
+    &__label {
+        display: block;
+        font-size: kt-get($form-config, 'font-size');
+        font-weight: var(--dui-font-weight-normal);
+        padding-top: kt-get($label-config, 'padding-y');
+        padding-bottom: kt-get($label-config, 'padding-y');
+    }
+
+    &__error {
+        color: kt-get($state-colors, danger, base);
+    }
+}

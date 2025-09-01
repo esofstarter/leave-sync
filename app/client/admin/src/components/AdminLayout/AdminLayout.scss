@@ -1,0 +1,82 @@
+.admin-layout {
+  height: 100%;
+  display: grid;
+  grid-template-areas: 'admin-layout-aside admin-layout-main';
+  grid-template-columns: var(--dui-aside-width) auto;
+  grid-template-rows: 100%;
+  transition: var(--dui-transition);
+  overflow: hidden;
+
+  &--aside-minimized {
+    grid-template-columns: var(--dui-aside-minimize-width) auto;
+  }
+
+  .kt-subheader {
+    margin: 0;
+
+    // Fixed subheader mode
+    .kt-header--fixed.kt-subheader--fixed & {
+      position: fixed;
+
+      //height: kt-get($subheader-config, fixed, height);
+      top: var(--dui-header-height-desktop);
+      left: 0;
+      right: 0;
+      transition: all 0.3s ease;
+      z-index: var(--dui-layers-fixed-header) - 3;
+      background-color: #fff;
+      box-shadow: 0 10px 30px 0 rgb(82 63 105 / 8%);
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    // Fixed header, minimized header and fixed subheader
+    .kt-header--fixed.kt-header--minimize.kt-subheader--fixed & {
+      top: var(--dui-header-minimizeheight-desktop);
+      transition: top 0.3s ease;
+    }
+
+    .kt-aside--enabled.kt-subheader--fixed & {
+      left: var(--dui-aside-width);
+    }
+
+    .kt-subheader--fixed.aside--minimize-hover &,
+    .kt-subheader--fixed.aside--minimize & {
+      left: var(--dui-aside-minimize-width);
+      transition: var(--dui-transition);
+    }
+  }
+
+  &__aside {
+    grid-area: admin-layout-aside;
+  }
+
+  @include kt-tablet-and-mobile {
+    .kt-header-mobile--fixed & {
+      padding-top: var(--dui-header-height-mobile);
+    }
+  }
+
+  &__main {
+    $block: &;
+
+    transition: var(--dui-transition);
+    grid-area: admin-layout-main;
+    display: flex;
+    flex-direction: column;
+
+    @include kt-desktop {
+      &--aside-minimized {
+        transition: var(--dui-transition);
+
+        //padding-left: var(--dui-aside-minimize-width);
+      }
+
+
+      // Fixed Content Head
+      &--has-subheader#{$block}--fixed-subheader {
+        //padding-top: var(--dui-header-height-desktop + kt-get($subheader-config, fixed, height);
+      }
+    }
+  }
+}
