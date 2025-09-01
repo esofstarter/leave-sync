@@ -70,7 +70,7 @@ export default defineConfig({
     cors: true,
 
     hmr: {
-      host: "165.232.82.246",  // Use your server IP or domain
+      host: process.env.APP_HOST,  // Use your server IP or domain
       protocol: "wss",
       clientPort: 443,
     },
