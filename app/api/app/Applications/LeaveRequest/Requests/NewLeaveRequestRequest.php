@@ -4,8 +4,6 @@ namespace App\Applications\LeaveRequest\Requests;
 
 use App\Http\Requests\ApiFormRequest;
 use DateTime;
-use DatePeriod;
-use DateInterval;
 use Illuminate\Support\Facades\Auth;
 use App\Applications\NationalHoliday\Model\NationalHoliday;
 use App\Applications\LeaveRequest\Model\LeaveRequest;
@@ -98,17 +96,28 @@ class NewLeaveRequestRequest extends ApiFormRequest
             ->pluck('date')
             ->toArray();
 
-        $leaveDays = iterator_count(
-            new DatePeriod($startDate, new DateInterval('P1D'), $endDate->modify('+1 day'))
-        );
+        // Calculate the difference in days (inclusive of both start and end dates)
+        $interval = $startDate->diff($endDate);
+        $totalDays = $interval->days + 1; // +1 because both start and end dates are inclusive
+        
+        // Count weekends and holidays in the date range
+        $weekendHolidayDays = 0;
+        $currentDate = clone $startDate;
+        
+        for ($i = 0; $i < $totalDays; $i++) {
+            $dateString = $currentDate->format('Y-m-d');
+            $dayOfWeek = $currentDate->format('N'); // 1=Monday, 7=Sunday
+            
+            if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($dateString, $nationalHolidays)) {
+                $weekendHolidayDays++;
+            }
+            
+            $currentDate->modify('+1 day');
+        }
+        
+        $leaveDays = $totalDays - $weekendHolidayDays;
 
-        // Remove weekends and national holidays from leave count
-        $leaveDays -= count(array_filter(
-            iterator_to_array(new DatePeriod($startDate, new DateInterval('P1D'), $endDate->modify('+1 day'))),
-            fn($date) => in_array($date->format('N'), [6, 7]) || in_array($date->format('Y-m-d'), $nationalHolidays)
-        ));
-
-        return $leaveDays;
+        return max(1, $leaveDays);
     }
 
 

@@ -19,7 +19,7 @@ use App\Applications\LeaveRequest\Model\LeaveRequest;
 use App\Applications\Document\Model\Document;
 use App\Applications\NationalHoliday\Model\NationalHoliday;
 use Illuminate\Support\Facades\{Mail, Auth};
-use DateTime, DateInterval, DatePeriod;
+use DateTime;
 use setasign\Fpdi\Fpdi;
 use Storage;
 use Illuminate\Support\Facades\Route;
@@ -396,26 +396,41 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
     }
 
     private function calculateDays($leaveRequest, $user) {
+        // Handle single-day requests
+        if ($leaveRequest->end_date === null) {
+            return 1;
+        }
+
         $startDate = new DateTime($leaveRequest->start_date);
-        $endDate = $leaveRequest->end_date ? new DateTime($leaveRequest->end_date) : $startDate;
+        $endDate = new DateTime($leaveRequest->end_date);
     
-        // ✅ Ensure the end date is always included
-        $endDate->modify('+1 day');
-    
+        // Calculate the difference in days (inclusive of both start and end dates)
+        $interval = $startDate->diff($endDate);
+        $totalDays = $interval->days + 1; // +1 because both start and end dates are inclusive
+        
         $country = Country::find($user->country);
     
         $nationalHolidays = NationalHoliday::whereYear('date', $startDate->format('Y'))
             ->where('country', $country->name)
             ->pluck('date')
             ->toArray();
-    
-        $leaveDays = iterator_count(new DatePeriod($startDate, new DateInterval('P1D'), $endDate));
-    
-        // ✅ Exclude weekends and national holidays from the count
-        $leaveDays -= count(array_filter(
-            iterator_to_array(new DatePeriod($startDate, new DateInterval('P1D'), $endDate)),
-            fn($date) => in_array($date->format('N'), [6, 7]) || in_array($date->format('Y-m-d'), $nationalHolidays)
-        ));
+        
+        // Count weekends and holidays in the date range
+        $weekendHolidayDays = 0;
+        $currentDate = clone $startDate;
+        
+        for ($i = 0; $i < $totalDays; $i++) {
+            $dateString = $currentDate->format('Y-m-d');
+            $dayOfWeek = $currentDate->format('N'); // 1=Monday, 7=Sunday
+            
+            if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($dateString, $nationalHolidays)) {
+                $weekendHolidayDays++;
+            }
+            
+            $currentDate->modify('+1 day');
+        }
+        
+        $leaveDays = $totalDays - $weekendHolidayDays;
     
         return max(1, $leaveDays); // ✅ Ensure at least 1 day is counted
     }

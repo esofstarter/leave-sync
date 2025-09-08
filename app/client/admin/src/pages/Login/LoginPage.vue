@@ -53,7 +53,7 @@
 <template>
   <div class="auth-login">
     <div class="auth-base__head">
-      <h3 class="auth-base__title">LeaveSync</h3>
+      <h3 class="auth-base__title">ESOF LeaveSync</h3>
     </div>
     <form class="kt-form auth-base__form" @submit.prevent="submitForm">
       <div class="input-group">
