@@ -27,7 +27,7 @@
   const currentYear = today.getFullYear();
 
   const minDate = computed(() => today.toISOString().split("T")[0]);
-  const maxDate = computed(() => `${currentYear}-12-31`);
+  const maxDate = computed(() => `${currentYear + 1}-12-31`);
 
   const props = defineProps(["user", "isEditPage"]);
 

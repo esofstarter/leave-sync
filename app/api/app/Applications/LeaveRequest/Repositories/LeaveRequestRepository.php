@@ -79,7 +79,9 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         $query = $this->leaveRequest->with(['user', 'leaveType']);
         
         $user = Auth::user();
-        $query->where('request_to', '=', $user->id);
+        if($user->role !== 1) {
+            $query->where('request_to', '=', $user->id);
+        }
 
         $query->where('is_confirmed', '=', 0);
 
@@ -294,102 +296,145 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
     private function createLeaveRequestPDF(User $user, LeaveRequest $leaveRequest): void
     {
         // 1) Transliterate to Cyrillic (requires PHP intl)
-        $toCyr = function (string $s): string {
+        $toCyr = static function (string $s): string {
             if (class_exists(\Transliterator::class)) {
-                // You can try 'Latin-Cyrillic/BGN' for Bulgarian,
-                // or just 'Latin-Cyrillic' which works well for mk/bg.
-                return \Transliterator::create('Latin-Cyrillic')->transliterate($s);
+                $tr = \Transliterator::create('Latin-Cyrillic');
+                return $tr ? (string) $tr->transliterate($s) : $s;
             }
-            return $s; // fallback: leave as-is
+            return $s;
         };
 
-        $fullNameCyr = $toCyr($user->first_name).' '.$toCyr($user->last_name);
-        $positionCyr = $toCyr((string)($user->position ?? ''));
-        $fullNameRequestCyr = $toCyr($leaveRequest->requestToUser->first_name).' '.$toCyr($leaveRequest->requestToUser->last_name);
+        $fullNameCyr = trim($toCyr((string) $user->first_name) . ' ' . $toCyr((string) $user->last_name));
+        $positionCyr = trim($toCyr((string) ($user->position ?? '')));
+
+        $requestToUser = $leaveRequest->requestToUser; // assumes relation is loaded/available
+        $fullNameRequestCyr = $requestToUser
+            ? trim($toCyr((string) $requestToUser->first_name) . ' ' . $toCyr((string) $requestToUser->last_name))
+            : '';
 
         $isSingleDay = $leaveRequest->end_date === null;
-        $nowDate     = $this->formatDate(now());
-        $start_date  = $this->formatDate($leaveRequest->start_date);
-        $end_date    = $leaveRequest->end_date ? $this->formatDate($leaveRequest->end_date) : $start_date;
 
-        $leaveDays = $isSingleDay ? 1 : $this->calculateDays($leaveRequest, $user);
+        $nowDate    = $this->formatDate(now());
+        $start_date = $this->formatDate($leaveRequest->start_date);
+        $end_date   = $leaveRequest->end_date ? $this->formatDate($leaveRequest->end_date) : $start_date;
+
+        $leaveDays   = $isSingleDay ? 1 : $this->calculateDays($leaveRequest, $user);
         $userCountry = (int) $leaveRequest->user->country;
 
-        // 2) Use TCPDF-backed FPDI
-        $pdf = new TcpdfFpdi();
+        // 2) Choose template
+        if ($userCountry === 1) {
+            $templatePath = public_path($leaveRequest->leave_type_id == 3 ? 'MK_template_paid.pdf' : 'MK_template_unpaid.pdf');
+        } else {
+            $templatePath = public_path($leaveRequest->leave_type_id == 3 ? 'BG_template_paid.pdf' : 'BG_template_unpaid.pdf');
+        }
 
-        // optional: remove TCPDF default header/footer
+        if (!file_exists($templatePath)) {
+            throw new \RuntimeException("PDF template missing: {$templatePath}");
+        }
+
+        // 3) Use TCPDF-backed FPDI but hard-disable Header/Footer by overriding methods
+        $pdf = new class extends TcpdfFpdi {
+            public function Header(): void {}
+            public function Footer(): void {}
+        };
+
+        // Make sure TCPDF doesn't add anything + lock geometry
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
+        $pdf->SetMargins(0, 0, 0);
+        $pdf->SetAutoPageBreak(false, 0);
+        $pdf->setHeaderMargin(0);
+        $pdf->setFooterMargin(0);
 
-        $pdf->AddPage();
-
-        // 3) Import your existing PDF template as before
-        if ($userCountry === 1) {
-            $pdf->setSourceFile(public_path($leaveRequest->leave_type_id == 3 ? 'MK_template_paid.pdf' : 'MK_template_unpaid.pdf'));
-        } else {
-            $pdf->setSourceFile(public_path($leaveRequest->leave_type_id == 3 ? 'BG_template_paid.pdf' : 'BG_template_unpaid.pdf'));
+        // 4) Import template FIRST, then create a page that matches the template size exactly (prevents scaling/coordinate drift)
+        $pageCount = $pdf->setSourceFile($templatePath);
+        if ($pageCount < 1) {
+            throw new \RuntimeException("Template has no pages: {$templatePath}");
         }
+
         $tplIdx = $pdf->importPage(1);
-        $pdf->useTemplate($tplIdx, 0, 0, 210);
+        $tplSize = $pdf->getTemplateSize($tplIdx); // width/height in the current unit
 
-        // 4) Set a Unicode font that includes Cyrillic
-        // TCPDF ships 'dejavusans' & 'dejavusanscondensed'
-        $pdf->SetFont('dejavusans', '', 11, '', true); // <- UTF-8 + Cyrillic OK
+        // Create page exactly matching template
+        $pdf->AddPage($tplSize['orientation'], [$tplSize['width'], $tplSize['height']]);
+        $pdf->useTemplate($tplIdx, 0, 0, $tplSize['width'], $tplSize['height'], true);
 
-        // 5) Write text (now Cyrillic works)
-        if ($userCountry !== 1) {
-            $pdf->SetXY(111, 76);
-            $pdf->Write(0, $fullNameCyr);   
-            $pdf->SetXY(129, 82);
-            $pdf->Write(0, $positionCyr); 
-            $pdf->SetXY(115, 88);
-            $pdf->Write(0, $leaveRequest->user->private_id);                // ← Cyrillic
-            $pdf->SetXY($leaveRequest->leave_type_id == 3 ? 92 : 80, 132);
-            $pdf->Write(0, (string)($leaveDays ?? 'N/A'));
-            $pdf->SetXY(44, 138);
-            $pdf->Write(0, $start_date ?? 'N/A');
-            $pdf->SetXY(44, 145);
-            $pdf->Write(0, $end_date ?? '');
-            $pdf->SetXY(24, 210);
-            $pdf->Write(0, $nowDate ?? 'N/A');
-            $pdf->SetXY(96, 236);
-            $pdf->Write(0, $fullNameRequestCyr ?? 'N/A');
-            $pdf->SetXY(24, 241);
-            $pdf->Write(0, $nowDate ?? 'N/A');
+        // 5) Cyrillic-capable font + slightly smaller size
+        $pdf->SetFont('dejavusans', '', 10, '', true);
+
+        // Helper: bounded text placement (prevents long text spilling into other fields)
+        $put = static function (TcpdfFpdi $pdf, float $x, float $y, float $w, string $text, string $align = 'L', float $fontSize = 10.0): void {
+            $pdf->SetFont('dejavusans', '', $fontSize, '', true);
+            $pdf->SetXY($x, $y);
+            $pdf->MultiCell($w, 0, $text, 0, $align, false, 1, '', '', true, 0, false, true, 0, 'T', false);
+        };
+
+        // Helper: short fixed fields
+        $putCell = static function (TcpdfFpdi $pdf, float $x, float $y, float $w, string $text, string $align = 'C', float $fontSize = 10.0): void {
+            $pdf->SetFont('dejavusans', '', $fontSize, '', true);
+            $pdf->SetXY($x, $y);
+            $pdf->Cell($w, 0, $text, 0, 0, $align, false);
+        };
+
+        // 6) Write text per template (start from your original coordinates; reduce font for name if needed)
+        if ($userCountry === 1) {
+            // MK TEMPLATE (revert to your original block, only smaller font + bounded name)
+            $put($pdf, 112 , 73, 90, $fullNameCyr, 'L', 9);
+
+            $putCell($pdf, 56, 116.5, 18, (string) ($leaveDays ?? 'N/A'), 'C', 8.5);
+            $putCell($pdf, 121, 116.5, 28, (string) ($start_date ?? 'N/A'), 'C', 8.5);
+            $putCell($pdf, 146, 116.5, 28, (string) ($end_date ?? ''), 'C', 8.5);
+
+            $put($pdf, 24, 193, 55, (string) ($nowDate ?? 'N/A'), 'L', 10);
         } else {
-            $pdf->SetXY(111, 77);
-            $pdf->Write(0, $fullNameCyr);                // ← Cyrillic
-            $pdf->SetXY(65, 118);
-            $pdf->Write(0, (string)($leaveDays ?? 'N/A'));
-            $pdf->SetXY(124, 118);
-            $pdf->Write(0, $start_date ?? 'N/A');
-            $pdf->SetXY(150, 118);
-            $pdf->Write(0, $end_date ?? '');
-            $pdf->SetXY(24, 193);
-            $pdf->Write(0, $nowDate ?? 'N/A');
+            // BG TEMPLATE (your original positions, but bounded)
+            $put($pdf, 111, 77, 90, $fullNameCyr, 'L', 8.5);
+            $put($pdf, 129, 82, 70, $positionCyr, 'L', 8.5);
+
+            $put($pdf, 115, 88, 60, (string) $leaveRequest->user->private_id, 'L', 10);
+
+            $putCell($pdf, ($leaveRequest->leave_type_id == 3 ? 92 : 80), 132, 20, (string) ($leaveDays ?? 'N/A'), 'C', 10);
+
+            $putCell($pdf, 42, 138, 30, (string) ($start_date ?? 'N/A'), 'C', 9.5);
+            $putCell($pdf, 42, 145, 30, (string) ($end_date ?? ''), 'C', 9.5);
+
+            $put($pdf, 24, 210, 45, (string) ($nowDate ?? 'N/A'), 'L', 10);
+            $put($pdf, 96, 236, 100, (string) ($fullNameRequestCyr ?? 'N/A'), 'L', 9.5);
+            $put($pdf, 24, 241, 45, (string) ($nowDate ?? 'N/A'), 'L', 10);
+            
         }
 
-        // Save file (same as before)
-        $pdfDirectory = storage_path("app/public/");
-        if (!file_exists($pdfDirectory)) {
-            mkdir($pdfDirectory, 0777, true);
+        // 7) Save file
+        $pdfDirectory = storage_path('app/public/');
+        if (!is_dir($pdfDirectory) && !mkdir($pdfDirectory, 0755, true) && !is_dir($pdfDirectory)) {
+            throw new \RuntimeException("Unable to create PDF directory: {$pdfDirectory}");
         }
-        $fileName = $user->first_name . "_" . $user->last_name ."_" . str_replace('-', '_', $leaveRequest->start_date) . ".pdf";
+        if (!is_writable($pdfDirectory)) {
+            throw new \RuntimeException("PDF directory not writable: {$pdfDirectory}");
+        }
+
+        // Safer filename (avoid Cyrillic filesystem edge cases)
+        $safeBaseName = \Illuminate\Support\Str::slug($user->first_name . ' ' . $user->last_name, '_');
+        $fileName     = $safeBaseName . '_' . str_replace('-', '_', (string) $leaveRequest->start_date) . '.pdf';
+
         $pdfPath  = $fileName;
         $fullPath = $pdfDirectory . $pdfPath;
 
         $pdf->Output($fullPath, 'F');
 
+        clearstatcache(true, $fullPath);
+        if (!file_exists($fullPath) || filesize($fullPath) === 0) {
+            throw new \RuntimeException("PDF not written or empty at: {$fullPath}");
+        }
+
         Document::create([
             'user_id'          => $leaveRequest->user_id,
             'leave_request_id' => $leaveRequest->id,
             'file_path'        => $pdfPath,
-            'file_name'        => $fileName
+            'file_name'        => $fileName,
         ]);
     }
 
-    
     private function formatDate(string $date): string
     {
         return date('d.m.Y', strtotime($date));

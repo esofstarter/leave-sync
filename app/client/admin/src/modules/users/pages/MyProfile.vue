@@ -17,6 +17,7 @@
     UserFormPasswordTab,
     UserFormCalendarTab,
     UserFormLeaveDaysTab,
+    UserFormDocumentsTab
   } from "../components";
   import { useUsersForm } from "../composables";
   import type { UserFormItem } from "../types";
@@ -145,6 +146,12 @@
         </TabbedContentTab>
         <TabbedContentTab v-if="auth.user().role !== 4" :label="'Calednar'" id="calendar">
           <UserFormCalendarTab :userId="id" :country="country" />
+        </TabbedContentTab>
+        <TabbedContentTab
+          :label="'PDFs'"
+          id="documents"
+        >
+          <UserFormDocumentsTab :userId="id" />
         </TabbedContentTab>
       </TabbedContent>
     </form>

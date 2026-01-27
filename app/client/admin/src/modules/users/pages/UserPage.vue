@@ -29,6 +29,7 @@
   const changePasswordLabel = t("users.password.change");
   const route = useRoute();
   const isEditPage = computed(() => route.name == "edit.user");
+  const isAddUserPage = computed(() => route.name == "add.user");
   const userId = Number(route.params.userId);
   const newFile = ref<File | null>(null);
   const showConfirmModal = ref(false);
@@ -220,7 +221,7 @@
           <UserFormCalendarTab :userId="id" :country="country" />
         </TabbedContentTab>
         <TabbedContentTab
-          v-if="isUserWriter && isEditPage"
+          v-if="!isAddUserPage"
           :label="'PDFs'"
           id="documents"
         >
