@@ -3,19 +3,19 @@ import { DatatableColumns } from "@starter-core/dash-ui/src";
 export const NATIONAL_HOLIDAYS_DATATABLE_COLUMNS: DatatableColumns = [
   {
     id: 0,
-    label: "Date (yyyy-mm-dd)",
+    label: "strings.date",
     name: "date",
     sortable: true,
   },
   {
     id: 1,
-    label: "Country",
+    label: "strings.country",
     name: "country",
     sortable: true,
   },
   {
     id: 2,
-    label: "Year",
+    label: "strings.year",
     name: "year",
     sortable: true,
   },

@@ -39,7 +39,6 @@
       <CountriesTableRow
         v-for="(country, index) in countries"
         :key="country.id"
-        :columns="COUNTRIES_DATATABLE_COLUMNS"
         :country="country"
         :is-even-row="index % 2 === 0"
         :deleteCountry="

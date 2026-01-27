@@ -13,16 +13,16 @@ export const LEAVE_TYPE_ROUTES_DATA: ModulesRoutesData<LeaveTypesRoutes> = {
   main: {
     path: "leave_types",
     name: "leave_types",
-    translationKey: "leave_types",
+    translationKey: "admin.leave_types.main",
   },
   add: {
     path: "leave_type/add",
     name: "add.leave_type",
-    translationKey: "leave_types.add",
+    translationKey: "admin.leave_types.add",
   },
   edit: {
     path: "leave_type/:leaveTypeId",
     name: "edit.leave_type",
-    translationKey: "leave_types.edit_leave_types",
+    translationKey: "admin.leave_types.edit",
   },
 };

@@ -19,7 +19,7 @@ export default function useAuthComp() {
     return auth.refresh(data);
   }
 
-  function login(data): Promise<any> {
+  function login(data: any): Promise<any> {
     data = data || {};
 
     return new Promise((resolve, reject) => {
@@ -28,30 +28,48 @@ export default function useAuthComp() {
           data: data.data,
           remember: data.remember,
           staySignedIn: data.staySignedIn,
-          fetchUser: true,
-          redirect: data.redirect,
+          fetchUser: false,
+          redirect: false,
         })
-        .then((response) => {
-          if (data.remember) {
-            auth.remember(
-              JSON.stringify({
-                name: response.response.data.user.name,
-              }),
-            );
+        .then(async (response: any) => {
+          const res = response?.response ?? response;
+          const status = res?.status;
+
+          if (status !== 200) {
+            return reject({
+              status: status ?? 0,
+              message:
+                res?.data?.error ??
+                res?.data?.message ??
+                "Invalid credentials",
+              raw: response,
+            });
           }
 
-          if (response.status === 200) {
-            // Redirect to the desired route after successful login
-            router.push("/admin/dashboard");
+          try {
+            await auth.fetch();
+          } catch (e) {
+            console.log(e);
           }
+
+          router.push("/admin/dashboard");
 
           resolve(response);
         })
-        .catch((error) => {
-          reject(error?.message);
+        .catch((error: any) => {
+          const status = error?.response?.status ?? error?.status ?? 0;
+          const message =
+            error?.response?.data?.error ??
+            error?.response?.data?.message ??
+            error?.message ??
+            "Invalid credentials";
+
+          reject({ status, message, raw: error });
         });
     });
   }
+
+
 
   function register(data) {
     data = data || {};

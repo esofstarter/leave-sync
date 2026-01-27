@@ -43,7 +43,18 @@
   } = useLeaveRequestsForm(leaveRequestId);
 
   const { handleSubmit, errors, setValues, defineField } =
-    useForm<LeaveRequestFormItem>({});
+    useForm<LeaveRequestFormItem>({
+      initialValues: {
+        id: 0,
+        user_id: 0,
+        leave_type_id: null as any,  
+        start_date: "",
+        end_date: "",
+        reason: "",
+        request_to: null as any,
+        is_confirmed: 0,
+      },
+  });
 
   const submitHandler = handleSubmit((values) => {
     if (isEditPage.value) {
@@ -76,20 +87,25 @@
     return new Date(date).toISOString().split("T")[0]; // Extracts only YYYY-MM-DD
   };
 
-  watch(() => {
-    if (formData.value) {
+  watch(
+    formData,
+    (value) => {
+      if (!value) return;
+
       setValues({
-        id: formData.value.id,
-        user_id: formData.value.user_id,
-        leave_type_id: formData.value.leave_type_id,
-        start_date: formatDate(formData.value.start_date),
-        end_date: formatDate(formData.value.end_date),
-        reason: formData.value.reason,
-        request_to: formData.value.request_to,
-        is_confirmed: formData.value.is_confirmed,
+        id: value.id,
+        user_id: value.user_id,
+        leave_type_id: value.leave_type_id,
+        start_date: formatDate(value.start_date),
+        end_date: formatDate(value.end_date),
+        reason: value.reason ?? "",
+        request_to: value.request_to,
+        is_confirmed: value.is_confirmed,
       });
-    }
-  }, [formData]);
+    },
+    { immediate: true }
+  );
+
 
   const [userId] = defineField("user_id");
   const [leaveTypeId] = defineField("leave_type_id");

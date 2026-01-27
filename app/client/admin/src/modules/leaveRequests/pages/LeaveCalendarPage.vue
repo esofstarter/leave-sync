@@ -73,7 +73,10 @@
 
   const calendarEvents = computed(() => {
     const leaveEvents = leaveDays.value.map((leave: any) => ({
-      title: leave.user.first_name + " " + leave.user.last_name,
+      
+      title: leave?.user
+        ? `${leave.user.first_name ?? ""} ${leave.user.last_name ?? ""}`.trim()
+        : "Leave",
       start: leave.start_date,
       end: leave.end_date
         ? new Date(new Date(leave.end_date).getTime() + 24 * 60 * 60 * 1000)

@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
     path: "/admin",
     component: AdminLayout,
     meta: {
-      title: t("strings.home", null),
+      title: t("admin.home"),
       auth: {
         roles: ["read_users"],
       },
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         name: "adminnotfound",
         component: NotFound,
         meta: {
-          title: t("page.not_found", null),
+          title: t("admin.page_not_found"),
           auth: {
             roles: ["write_users"],
           },

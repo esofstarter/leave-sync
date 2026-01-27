@@ -1,4 +1,19 @@
 {
+  "slug": "Slug",
+  "name": "Name",
+  "color": "Color",
   "actions": "Actions",
-  "delete": "Delete"
+  "delete": "Delete",
+  "to_date": "To (Date)",
+  "from_date": "From (Date)",
+  "pdf": "PDF",
+  "days": "Days",
+  "status": "Status",
+  "assigned_to": "Assigned To",
+  "from": "From",
+  "leave_type": "Leave Type",
+  "country_code": "Country Code",
+  "date": "Date (yyyy-mm-dd)",
+  "year": "Year",
+  "country": "Country"
 }

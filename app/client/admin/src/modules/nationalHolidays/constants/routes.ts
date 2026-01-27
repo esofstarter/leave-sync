@@ -13,16 +13,16 @@ export const NATIONAL_HOLIDAY_ROUTES_DATA: ModulesRoutesData<NationalHolidaysRou
   main: {
     path: "national_holidays",
     name: "national_holidays",
-    translationKey: "national_holidays",
+    translationKey: "admin.national_holidays.main",
   },
   add: {
     path: "national_holiday/add",
     name: "add.national_holiday",
-    translationKey: "national_holidays.add",
+    translationKey: "admin.national_holidays.add",
   },
   edit: {
     path: "national_holiday/:nationalHolidayId",
     name: "edit.national_holiday",
-    translationKey: "national_holidays.edit_national_holidays",
+    translationKey: "admin.national_holidays.edit",
   },
 };

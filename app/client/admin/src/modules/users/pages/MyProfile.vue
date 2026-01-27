@@ -44,8 +44,24 @@
     uploadAvatar,
   } = useUsersForm(userId);
 
-  const { handleSubmit, errors, setValues, defineField } =
-    useForm<UserFormItem>();
+  const { handleSubmit, errors, setValues, defineField } = useForm<UserFormItem>({
+    initialValues: {
+      id: 0,
+      first_name: "",
+      last_name: "",
+      email: "",
+      role: 0,
+      is_disabled: false,
+      is_office_based: false,
+      paid_leaves_max: 0,
+      paid_leaves_left: 0,
+      country: 1,
+      private_id: "",
+      position: "",
+      password: "",
+    },
+  });
+
 
   const submitHandler = handleSubmit((values) => {
     updateUser(values);
@@ -58,24 +74,25 @@
     newFile.value = file;
   };
 
-  watch(() => {
-    if (formData.value) {
+  watch(formData, (value) => {
+    if (value) {
       setValues({
-        id: formData.value.id,
-        email: formData.value.email,
-        first_name: formData.value.first_name,
-        last_name: formData.value.last_name,
-        role: formData.value.role,
-        is_disabled: formData.value.is_disabled,
-        paid_leaves_max: formData.value.paid_leaves_max,
-        paid_leaves_left: formData.value.paid_leaves_left,
-        country: formData.value.country,
-        is_office_based: formData.value.is_office_based,
-        private_id: formData.value.private_id,
-        position: formData.value.position,
+        id: value.id,
+        email: value.email,
+        first_name: value.first_name,
+        last_name: value.last_name,
+        role: value.role,
+        is_disabled: value.is_disabled,
+        paid_leaves_max: value.paid_leaves_max,
+        paid_leaves_left: value.paid_leaves_left,
+        country: value.country,
+        is_office_based: value.is_office_based,
+        private_id: value.private_id,
+        position: value.position,
       });
     }
-  }, [formData]);
+  });
+
 
   const [id] = defineField("id");
   const [lastName] = defineField("last_name");
@@ -127,6 +144,7 @@
             v-model:country="country"
             v-model:privateId="privateId"
             v-model:position="position"
+            :paidLeavesLeft="paidLeavesLeft"
             :isEdit="true"
             :isMyProfile="true"
             :errors="errors"

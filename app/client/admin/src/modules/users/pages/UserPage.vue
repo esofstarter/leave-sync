@@ -68,10 +68,23 @@
     uploadAvatar,
   } = useUsersForm(userId);
 
-  const { handleSubmit, errors, setValues, defineField } =
-    useForm<UserFormItem>({
-      validationSchema,
-    });
+  const { handleSubmit, errors, setValues, defineField } = useForm<UserFormItem>({
+    validationSchema,
+    initialValues: {
+      id: undefined,
+      email: "",
+      first_name: "",
+      last_name: "",
+      role: 0,          
+      is_disabled: false,
+      is_office_based: false,
+      paid_leaves_max: 0,
+      paid_leaves_left: 0,
+      country: 0,          
+      password: "",
+    },
+  });
+
 
   const submitHandler = handleSubmit((values) => {
     if (newFile.value !== null) {
@@ -88,24 +101,29 @@
     newFile.value = file;
   };
 
-  watch(() => {
-    if (formData.value) {
+  watch(
+    formData,
+    (val) => {
+      if (!val) return;
+
       setValues({
-        id: formData.value.id,
-        email: formData.value.email,
-        first_name: formData.value.first_name,
-        last_name: formData.value.last_name,
-        role: formData.value.role,
-        is_disabled: formData.value.is_disabled,
-        paid_leaves_max: formData.value.paid_leaves_max,
-        paid_leaves_left: formData.value.paid_leaves_left,
-        country: formData.value.country,
-        is_office_based: formData.value.is_office_based,
+        id: val.id,
+        email: val.email ?? "",
+        first_name: val.first_name ?? "",
+        last_name: val.last_name ?? "",
+        role: val.role ?? 0,
+        is_disabled: !!val.is_disabled,
+        paid_leaves_max: val.paid_leaves_max ?? 0,
+        paid_leaves_left: val.paid_leaves_left ?? 0,
+        country: val.country ?? 0,
+        is_office_based: !!val.is_office_based,
       });
 
-      originalPaidLeavesMax.value = formData.value.paid_leaves_max;
-    }
-  }, [formData]);
+      originalPaidLeavesMax.value = val.paid_leaves_max ?? 0;
+    },
+    { immediate: true },
+  );
+
 
   const [id] = defineField("id");
   const [lastName] = defineField("last_name");

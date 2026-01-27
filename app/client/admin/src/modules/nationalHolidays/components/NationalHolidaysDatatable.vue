@@ -39,7 +39,6 @@
       <NationalHolidaysTableRow
         v-for="(holiday, index) in nationalHolidays"
         :key="holiday.id"
-        :columns="NATIONAL_HOLIDAYS_DATATABLE_COLUMNS"
         :holiday="holiday"
         :is-even-row="index % 2 === 0"
         :deleteNationalHoliday="

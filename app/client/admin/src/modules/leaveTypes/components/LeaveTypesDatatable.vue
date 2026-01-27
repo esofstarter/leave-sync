@@ -3,7 +3,7 @@
   import { useLeaveTypesTable } from "../composables";
   import { useLeaveTypesForm } from "../composables/useLeaveTypesForm";
   import { LEAVE_TYPES_DATATABLE_COLUMNS } from "../constants";
-  import LeaveTpyesTableRow from "./LeaveTpyesTableRow.vue";
+  import LeaveTypesTableRow from "./LeaveTypesTableRow.vue";
   import LeaveTypesTableHeader from "./LeaveTypesTableHeader.vue";
   import {
     useDatatable,
@@ -36,10 +36,9 @@
       <DatatableFilters />
     </template>
     <template v-if="leaveTypes" #default>
-      <LeaveTpyesTableRow
+      <LeaveTypesTableRow
         v-for="(leaveType, index) in leaveTypes"
         :key="leaveType.id"
-        :columns="LEAVE_TYPES_DATATABLE_COLUMNS"
         :leaveType="leaveType"
         :is-even-row="index % 2 === 0"
         :deleteLeaveType="

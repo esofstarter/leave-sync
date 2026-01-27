@@ -4,10 +4,10 @@
   import { FormInput, FormSwitch } from "@starter-core/dash-ui/src";
 
   const { t } = useI18n();
-  const slug = defineModel("slug", { required: true, type: String });
-  const name = defineModel("name", { required: true, type: String });
-  const isPaid = defineModel("isPaid", { required: true, type: Boolean });
-  const color = defineModel("color", { required: true, type: String });
+  const slug = defineModel<string>("slug", { default: "" });
+  const name = defineModel<string>("name", { default: "" });
+  const isPaid = defineModel<boolean>("isPaid", { default: false });
+  const color = defineModel<string>("color", { default: "#000000" });
 </script>
 <template>
   <div class="kt-section">

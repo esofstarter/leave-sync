@@ -1,29 +1,41 @@
 {
   "dashboard": "Dashboard",
   "myprofile": "My Profile",
+  "home": "Home",
+  "page_not_found": "Page not found",
   "users": {
     "main": "Users",
     "admin": "Admin Users",
     "public": "Public Users",
-    "add": "Add user"
+    "add": "Add user",
+    "edit": "Edit user"
   },
   "leave_types": {
     "main": "Leave Types",
-    "add": "Add Leave Type"
+    "add": "Add Leave Type",
+    "edit": "Edit Leave Type"
   },
   "national_holidays": {
     "main": "Holidays",
-    "add": "Add Holidaty"
+    "add": "Add Holiday",
+    "edit": "Edit Holiday"
   },
   "leave_requests": {
     "mine": "My Leave Requests",
     "main": "Leave Requests",
     "add": "New Request",
     "all": "All Leave Requests",
-    "new": "New Leave Request"
+    "new": "New Leave Request",
+    "edit": "Edit Leave Request",
+    "approve": "Approve Leave Request",
+    "decline": "Decline Leave Request"
   },
   "countries": {
     "main": "Countries",
-    "add": "Add Country"
+    "add": "Add Country",
+    "edit": "Edit Country"
+  },
+  "vacation_days": {
+    "main": "Vacation Days"
   }
 }

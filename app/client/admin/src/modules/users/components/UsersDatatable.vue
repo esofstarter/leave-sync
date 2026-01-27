@@ -45,7 +45,6 @@
       <UsersTableRow
         v-for="(user, index) in users"
         :key="user.id"
-        :columns="USERS_DATATABLE_COLUMNS"
         :user="user"
         :is-even-row="index % 2 === 0"
         :deleteUser="(id) => deleteUser(id, { onSuccess: () => refetch() })"

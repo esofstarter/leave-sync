@@ -45,18 +45,22 @@
         remember: false,
         staySignedIn: staySignedIn.value,
       });
-    } catch (error) {
-      authError.value = true;
+    } catch (error: any) {
+      if (error?.status === 401) {
+        authError.value = true;
+      } else {
+        authError.value = true; // optional: show generic error
+      }
 
       const wrapper = document.querySelector(".auth-login");
       wrapper?.classList.add("shake");
-
       setTimeout(() => wrapper?.classList.remove("shake"), 300);
 
-      console.log(error);
+      console.log("LOGIN ERROR:", error);
     } finally {
       isLoading.value = false;
     }
+
   };
 </script>
 

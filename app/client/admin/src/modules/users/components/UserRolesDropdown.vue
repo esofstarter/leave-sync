@@ -17,6 +17,7 @@
   <form-dropdown
     v-if="!isFetchingRoles"
     v-model="role"
+    :readonly="false"
     id="role"
     :options="filteredRoles"
     :label="t('users.roles.label')"

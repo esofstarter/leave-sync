@@ -3,49 +3,49 @@ import { DatatableColumns } from "@starter-core/dash-ui/src";
 export const LEAVE_REQUESTS_DATATABLE_COLUMNS: DatatableColumns = [
   {
     id: 0,
-    label: "Leave Type",
+    label: "strings.leave_type",
     name: "leave_type_id",
     sortable: true,
   },
   {
     id: 1,
-    label: "From",
+    label: "strings.from",
     name: "request_to",
     sortable: true,
   },
   {
     id: 2,
-    label: "Assigned To",
+    label: "strings.assigned_to",
     name: "request_to",
     sortable: true,
   },
   {
     id: 3,
-    label: "Status",
+    label: "strings.status",
     name: "status",
     sortable: true,
   },
   {
     id: 4,
-    label: "From (Date)",
+    label: "strings.from_date",
     name: "start_date",
     sortable: true,
   },
   {
     id: 5,
-    label: "To (Date)",
+    label: "strings.to_date",
     name: "end_date",
     sortable: true,
   },
   {
     id: 6,
-    label: "Days",
+    label: "strings.days",
     name: "days",
     sortable: true,
   },
   {
     id: 7,
-    label: "PDF",
+    label: "strings.pdf",
     name: "pdf",
   },
   {

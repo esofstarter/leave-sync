@@ -29,6 +29,7 @@ onMounted(fetchCountries);
   <form-dropdown
     v-model="country"
     id="role"
+    :readonly="false"
     :options="countryOptions"
     :label="'Country'"
     is-inline

@@ -12,16 +12,16 @@ export const COUNTRY_ROUTES_DATA: ModulesRoutesData<countriesRoutes> = {
   main: {
     path: "countries",
     name: "countries",
-    translationKey: "countries",
+    translationKey: "admin.countries.main",
   },
   add: {
     path: "country/add",
     name: "add.country",
-    translationKey: "countries.add",
+    translationKey: "admin.countries.add",
   },
   edit: {
     path: "country/:countryId",
     name: "edit.country",
-    translationKey: "countries.edit_countries",
+    translationKey: "admin.countries.edit",
   },
 };

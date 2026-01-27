@@ -13,15 +13,15 @@
   const managers = ref([]);
   const admins = ref([]);
   const users = ref([]);
-  const userId = defineModel("userId", { required: true, type: Number });
-  const leaveTypeId = defineModel("leaveTypeId", {
-    required: true,
-    type: Number,
-  });
-  const startDate = defineModel("startDate", { required: true, type: String });
-  const endDate = defineModel("endDate", { required: true, type: String });
-  const reason = defineModel("reason", { required: true, type: String });
-  const requestTo = defineModel("requestTo", { required: true, type: Number });
+  const userId = defineModel<number>("userId", { default: 0 });
+
+  const leaveTypeId = defineModel<number | null>("leaveTypeId", { default: null });
+  const requestTo = defineModel<number | null>("requestTo", { default: null });
+
+  const startDate = defineModel<string>("startDate", { default: "" });
+  const endDate = defineModel<string>("endDate", { default: "" });
+  const reason = defineModel<string>("reason", { default: "" });
+
 
   const today = new Date();
   const currentYear = today.getFullYear();

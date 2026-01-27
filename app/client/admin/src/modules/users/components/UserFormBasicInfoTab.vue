@@ -11,28 +11,30 @@
   };
 
   const { t } = useI18n();
-  const isDisabled = defineModel("isDisabled", {
-    required: true,
-    type: Boolean,
-  });
-  const isOfficeBased = defineModel("isOfficeBased", {
-    required: true,
-    type: Boolean,
-  });
-  const role = defineModel("role", { required: true, type: Number });
-  const lastName = defineModel("lastName", { required: true, type: String });
-  const firstName = defineModel("firstName", { required: true, type: String });
-  const privateId = defineModel("privateId", { required: true, type: String });
-  const position = defineModel("position", { required: true, type: String });
-  const country = defineModel("country", { required: true, type: Number });
-  const email = defineModel("email", { required: true, type: String });
-  const { errors = {}, avatar } = defineProps<{
-    errors: any;
-    avatar: string | null;
-    paidLeavesLeft: number;
+  const isDisabled = defineModel<boolean>("isDisabled", { default: false });
+  const isOfficeBased = defineModel<boolean>("isOfficeBased", { default: false });
+
+  const role = defineModel<number>("role", { default: 0 });
+  const lastName = defineModel<string>("lastName", { default: "" });
+  const firstName = defineModel<string>("firstName", { default: "" });
+  const country = defineModel<number>("country", { default: 0 });
+  const email = defineModel<string>("email", { default: "" });
+
+  const privateId = defineModel<string | null>("privateId", { default: null });
+  const position = defineModel<string | null>("position", { default: null });
+
+  const props = withDefaults(defineProps<{
+    errors?: any;
+    avatar?: string | null;
+    paidLeavesLeft?: number;
     isEdit: boolean;
     isMyProfile: boolean;
-  }>();
+  }>(), {
+    avatar: null,
+    errors: () => ({}),
+    paidLeavesLeft: 0,
+  });
+
   const emit = defineEmits<EmitsType>();
 
   const uploadAvatar = (file: File) => {

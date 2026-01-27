@@ -13,21 +13,21 @@ export const USER_ROUTES_DATA: ModulesRoutesData<UsersRoutes> = {
   main: {
     path: "users",
     name: "users",
-    translationKey: "users",
+    translationKey: "admin.users.main",
   },
   add: {
     path: "user/add",
     name: "add.user",
-    translationKey: "users.add",
+    translationKey: "admin.users.add",
   },
   edit: {
     path: "user/:userId",
     name: "edit.user",
-    translationKey: "users.edit_user",
+    translationKey: "admin.users.edit",
   },
   myProfile: {
     path: "myprofile",
     name: "myprofile",
-    translationKey: "strings.myprofile",
+    translationKey: "admin.myprofile",
   },
 };

@@ -29,8 +29,15 @@
     updateLeaveType,
   } = useLeaveTypesForm(leaveTypeId);
 
-  const { handleSubmit, errors, setValues, defineField } =
-    useForm<LeaveTypeFormItem>();
+  const { handleSubmit, errors, setValues, defineField } = useForm<LeaveTypeFormItem>({
+    initialValues: {
+      slug: "",
+      name: "",
+      is_paid: false,
+      color: "#000000",
+    },
+  });
+
 
   const submitHandler = handleSubmit((values) => {
     if (isEditPage.value) {
@@ -40,17 +47,18 @@
     }
   });
 
-  watch(() => {
-    if (formData.value) {
-      setValues({
-        id: formData.value.id,
-        slug: formData.value.slug,
-        name: formData.value.name,
-        is_paid: formData.value.is_paid,
-        color: formData.value.color,
-      });
-    }
-  }, [formData]);
+  watch(formData, (val) => {
+    if (!val) return;
+
+    setValues({
+      id: val.id,
+      slug: val.slug,
+      name: val.name,
+      is_paid: val.is_paid,
+      color: val.color,
+    });
+  }, { immediate: true });
+
 
   const [slug] = defineField("slug");
   const [name] = defineField("name");

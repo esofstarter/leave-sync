@@ -8,10 +8,7 @@
   const { label, id, isInline, errors, isDisabled, options, readonly } =
     defineProps<FormDropdownProps>();
 
-  const model = defineModel({
-    required: true,
-    type: String
-  });
+  const model = defineModel<string | number | null>({ default: "" });
 
   const hasDefaultOption = computed(() => !options.some(
     (option) => option.id === String(model.value)
