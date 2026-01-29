@@ -9,8 +9,13 @@ services:
       dockerfile: api/Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - ./../../../server/api:/var/www/html
+      - leavesync_certbot_www:/var/www/certbot
+      - leavesync_letsencrypt:/etc/letsencrypt
     networks:
       - main
     depends_on:
@@ -51,3 +56,7 @@ services:
 
 networks:
   main:
+
+volumes:
+  leavesync_certbot_www:
+  leavesync_letsencrypt:
