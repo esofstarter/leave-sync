@@ -41,7 +41,10 @@ RUN apt-get update --fix-missing && \
         libmagickwand-dev \
         libmagickcore-dev \
         pkg-config \
-        autoconf && \
+        autoconf \
+        certbot \
+        python3-certbot-apache \
+        cron && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Composer
