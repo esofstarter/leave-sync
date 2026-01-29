@@ -17,8 +17,8 @@ services:
       - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
       - ${LOG_DIR-./logs/apache2}:/var/log/apache2
-      - certbot_www:/var/www/certbot
-      - letsencrypt:/etc/letsencrypt
+      - dev_env_letsencrypt:/etc/letsencrypt
+      - dev_env_certbot_www:/var/www/certbot
 
     environment:
       APACHE_DOCUMENT_ROOT: ${APACHE_DOCUMENT_ROOT-/var/www/html}
@@ -85,8 +85,8 @@ services:
     image: certbot/certbot:latest
     container_name: certbot
     volumes:
-      - letsencrypt:/etc/letsencrypt
-      - certbot_www:/var/www/certbot
+      - dev_env_letsencrypt:/etc/letsencrypt
+      - dev_env_certbot_www:/var/www/certbot
     entrypoint: /bin/sh -c
     command: "trap exit TERM; while :; do sleep 3600; done"
     networks:
@@ -97,5 +97,5 @@ networks:
     driver: bridge
 
 volumes:
-  letsencrypt:
-  certbot_www:
+  dev_env_letsencrypt:
+  dev_env_certbot_www:
