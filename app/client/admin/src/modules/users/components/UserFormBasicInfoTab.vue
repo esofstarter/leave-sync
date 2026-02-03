@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import { IconMail } from "@starter-core/icons";
+  import { ref, computed } from "vue";
   import { useI18n } from "vue-i18n";
   import UserCountriesDropdown from "./UserCountriesDropdown.vue";
   import UserFormAvatar from "./UserFormAvatar.vue";
@@ -22,6 +23,8 @@
 
   const privateId = defineModel<string | null>("privateId", { default: null });
   const position = defineModel<string | null>("position", { default: null });
+  const password = defineModel("password", { required: true });
+  const confirmPassword = ref(""); // Store confirm password field
 
   const props = withDefaults(defineProps<{
     errors?: any;
@@ -40,6 +43,19 @@
   const uploadAvatar = (file: File) => {
     emit("uploadAvatar", file);
   };
+  const passwordError = computed(() => {
+    if (confirmPassword.value && confirmPassword.value !== password.value) {
+      return 'Passwords do not match!';
+    }
+    return "";
+  });
+
+  const passwordLabel = computed(() => {
+    if (props.isEdit) {
+      return 'New Password';
+    }
+    return "Password";
+  });
 </script>
 <template>
   <div  v-if="!isMyProfile" class="kt-section kt-section--first">
@@ -122,6 +138,13 @@
           <IconMail />
         </template>
       </form-input>
+       <form-input
+        name="password"
+        type="password"
+        :label="passwordLabel"
+        v-model="password"
+        is-inline
+      />
       <form-input
         v-if="isMyProfile"
         v-model="privateId"

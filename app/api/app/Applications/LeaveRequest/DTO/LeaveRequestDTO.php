@@ -16,7 +16,7 @@ class LeaveRequestDTO
     public ?string $reason;
     public int $request_to;
     public int $confirmed_by;
-    public int $is_confirmed;
+    public ?int $is_confirmed;  
     public int $status;
     public int $days;
     public int $id;
@@ -33,7 +33,7 @@ class LeaveRequestDTO
         ?string $reason,
         int $request_to,
         int $confirmed_by = 0,
-        int $is_confirmed = 0,
+        ?int $is_confirmed = null,
         int $status = 0,
         int $days = 0,
         int $id = 0,
@@ -67,7 +67,7 @@ class LeaveRequestDTO
             reason: $request->input('reason', ''),
             request_to: $request->input('request_to'),
             confirmed_by: $request->input('confirmed_by', 0),
-            is_confirmed: $request->input('is_confirmed', 0),
+            is_confirmed: $request->has('is_confirmed') ? (int) $request->input('is_confirmed') : null,
             status: $request->input('status', 0),
             days: $request->input('days', 0),
             id: $request->input('id', 0)

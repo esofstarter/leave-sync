@@ -112,7 +112,9 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
     public function update(int $leaveRequestId, LeaveRequestDTO $leaveRequestData): LeaveRequest
     {
         $leaveRequest = $this->get($leaveRequestId);
-        $leaveRequestData->is_confirmed = 0;
+        if ($leaveRequestData->is_confirmed === null) {
+            $leaveRequestData->is_confirmed = $leaveRequest->is_confirmed;
+        }
         $leaveDays = $this->calculateDays($leaveRequestData, $leaveRequest->user);
         $leaveRequestData->days = $leaveDays;
         $leaveRequest->update([...$leaveRequestData->toArray(), 'user_id' => $leaveRequest->user_id]);

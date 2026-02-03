@@ -52,13 +52,22 @@
         end_date: "",
         reason: "",
         request_to: null as any,
-        is_confirmed: 0,
       },
   });
 
   const submitHandler = handleSubmit((values) => {
+    const payload = {
+      id: values.id,
+      user_id: values.user_id,
+      leave_type_id: values.leave_type_id,
+      start_date: values.start_date,
+      end_date: values.end_date,
+      reason: values.reason,
+      request_to: values.request_to,
+    };
+
     if (isEditPage.value) {
-      updateLeaveRequest(values);
+      updateLeaveRequest(payload as any); 
     } else {
       createLeaveRequest(values);
     }

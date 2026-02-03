@@ -105,6 +105,7 @@ class LeaveRequestController extends Controller
     {
         $leaveRequestId = Route::current()->parameter('id');
         $dto = LeaveRequestDTO::fromRequest($request);
+        
         $leaveRequestDTO = $this->leaveRequestService->update(
             $leaveRequestId,
             $dto

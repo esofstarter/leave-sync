@@ -43,12 +43,12 @@
 
   const validationSchema = {
     last_name(value: string) {
-      if (value?.length >= 5) return true;
-      return "Last name needs to be at least 5 characters.";
+      if (value?.length >= 3) return true;
+      return "Last name needs to be at least 3 characters.";
     },
     first_name(value: string) {
-      if (value?.length >= 5) return true;
-      return "First name needs to be at least 5 characters.";
+      if (value?.length >= 3) return true;
+      return "First name needs to be at least 3 characters.";
     },
     role(value: number) {
       if (value > 0) return true;
@@ -56,7 +56,7 @@
     },
     email(value: string) {
       if (value?.length >= 5) return true;
-      return "Name needs to be at least 5 characters.";
+      return "Email needs to be at least 5 characters.";
     },
   };
 
@@ -214,6 +214,7 @@
             v-model:email="email"
             v-model:firstName="firstName"
             v-model:country="country"
+            v-model:password="password"
             :paidLeavesLeft="paidLeavesLeft"
             :errors="errors"
             :avatar="formData?.avatar_thumbnail"
@@ -221,9 +222,6 @@
             :isMyProfile="false"
             @upload-avatar="uploadAvatarHandler"
           />
-        </TabbedContentTab>
-        <TabbedContentTab :label="'Password'" id="change-password">
-          <UserFormPasswordTab v-model:password="password" :isEdit="isEditPage" />
         </TabbedContentTab>
         <TabbedContentTab
           v-if="isEditPage"
