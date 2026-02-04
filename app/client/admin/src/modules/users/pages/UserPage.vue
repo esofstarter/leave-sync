@@ -152,7 +152,7 @@
   const [isDisabled] = defineField("is_disabled");
   const [role] = defineField("role");
   const [password] = defineField("password");
-  const [passwordConfirm] = defineField("password_confirmation");
+  const [passwordConfirmation] = defineField("password_confirmation");
   const [paidLeavesMax] = defineField("paid_leaves_max");
   const [paidLeavesLeft] = defineField("paid_leaves_left");
   const [country] = defineField("country");
@@ -236,7 +236,7 @@
             v-model:firstName="firstName"
             v-model:country="country"
             v-model:password="password"
-            v-model:passwordConfirmation="passwordConfirm"
+            v-model:passwordConfirmation="passwordConfirmation"
             :paidLeavesLeft="paidLeavesLeft"
             :errors="errors"
             :avatar="formData?.avatar_thumbnail"

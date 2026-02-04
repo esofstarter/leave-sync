@@ -42,8 +42,39 @@
     updateUser,
     uploadAvatar,
   } = useUsersForm(userId);
+  const validationSchema = {
+    last_name(value: string) {
+      if (value?.length >= 3) return true;
+      return "Last name needs to be at least 3 characters.";
+    },
+    first_name(value: string) {
+      if (value?.length >= 3) return true;
+      return "First name needs to be at least 3 characters.";
+    },
+    email(value: string) {
+      if (value?.length >= 5) return true;
+      return "Email needs to be at least 5 characters.";
+    },
 
+    // Password: only required when creating user OR when user typed something
+    password(value: string) {
+      if (!value) return true;
+
+      if (value.length >= 8) return true;
+      return "Password must be at least 8 characters.";
+    },
+
+    password_confirmation(value: string) {
+      if (!password.value) return true;
+
+      if (!value) return "Please confirm the password.";
+      if (value === password.value) return true;
+
+      return "Passwords do not match.";
+    },
+  };
   const { handleSubmit, errors, setValues, defineField } = useForm<UserFormItem>({
+    validationSchema,
     initialValues: {
       id: 0,
       first_name: "",
@@ -58,6 +89,7 @@
       private_id: "",
       position: "",
       password: "",
+      password_confirmation: "",
     },
   });
 
@@ -89,6 +121,7 @@
         private_id: value.private_id,
         position: value.position,
         password: "",
+        password_confirmation: "",
       });
     }
   });
@@ -101,12 +134,14 @@
   const [isDisabled] = defineField("is_disabled");
   const [role] = defineField("role");
   const [password] = defineField("password");
+  const [passwordConfirmation] = defineField("password_confirmation");
   const [paidLeavesMax] = defineField("paid_leaves_max");
   const [paidLeavesLeft] = defineField("paid_leaves_left");
   const [country] = defineField("country");
   const [isOfficeBased] = defineField("is_office_based");
   const [privateId] = defineField("private_id");
   const [position] = defineField("position");
+  
 </script>
 
 <template>
@@ -145,6 +180,7 @@
             v-model:privateId="privateId"
             v-model:position="position"
             v-model:password="password"
+            v-model:password-confirmation="passwordConfirmation"
             :paidLeavesLeft="paidLeavesLeft"
             :isEdit="true"
             :isMyProfile="true"
