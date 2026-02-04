@@ -24,6 +24,7 @@
   const privateId = defineModel<string | null>("privateId", { default: null });
   const position = defineModel<string | null>("position", { default: null });
   const password = defineModel("password", { required: true });
+  const passwordConfirmation = defineModel<string>("passwordConfirmation", { default: "" });
   const confirmPassword = ref(""); // Store confirm password field
 
   const props = withDefaults(defineProps<{
@@ -138,13 +139,23 @@
           <IconMail />
         </template>
       </form-input>
-       <form-input
+      <form-input
         name="password"
         type="password"
         :label="passwordLabel"
         v-model="password"
+        :error="errors.password"
         is-inline
       />
+
+      <form-input
+        name="password_confirmation"
+        type="password"
+        label="Confirm Password"
+        v-model="passwordConfirmation"
+        :error="errors.password_confirmation"
+        is-inline
+    />
       <form-input
         v-if="isMyProfile"
         v-model="privateId"

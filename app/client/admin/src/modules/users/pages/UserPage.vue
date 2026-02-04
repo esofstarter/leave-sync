@@ -52,13 +52,31 @@
     },
     role(value: number) {
       if (value > 0) return true;
-      return "Name needs to be at least 5 characters.";
+      return "Role is required.";
     },
     email(value: string) {
       if (value?.length >= 5) return true;
       return "Email needs to be at least 5 characters.";
     },
+
+    // Password: only required when creating user OR when user typed something
+    password(value: string) {
+      if (!value) return true;
+
+      if (value.length >= 8) return true;
+      return "Password must be at least 8 characters.";
+    },
+
+    password_confirmation(value: string) {
+      if (!password.value) return true;
+
+      if (!value) return "Please confirm the password.";
+      if (value === password.value) return true;
+
+      return "Passwords do not match.";
+    },
   };
+
 
   const {
     isLoading,
@@ -82,20 +100,20 @@
       paid_leaves_left: 0,
       country: 0,          
       password: "",
+      password_confirmation: "",
     },
   });
 
 
   const submitHandler = handleSubmit((values) => {
-    if (newFile.value !== null) {
-      uploadAvatar(newFile.value);
-    }
-    if (isEditPage.value) {
-      updateUser(values);
-    } else {
-      createUser(values);
-    }
+    const { password_confirmation, ...payload } = values;
+
+    if (newFile.value !== null) uploadAvatar(newFile.value);
+
+    if (isEditPage.value) updateUser(payload as any);
+    else createUser(payload as any);
   });
+
 
   const uploadAvatarHandler = (file: File) => {
     newFile.value = file;
@@ -117,6 +135,8 @@
         paid_leaves_left: val.paid_leaves_left ?? 0,
         country: val.country ?? 0,
         is_office_based: !!val.is_office_based,
+        password: "",
+        password_confirmation: "", 
       });
 
       originalPaidLeavesMax.value = val.paid_leaves_max ?? 0;
@@ -132,19 +152,20 @@
   const [isDisabled] = defineField("is_disabled");
   const [role] = defineField("role");
   const [password] = defineField("password");
+  const [passwordConfirm] = defineField("password_confirmation");
   const [paidLeavesMax] = defineField("paid_leaves_max");
   const [paidLeavesLeft] = defineField("paid_leaves_left");
   const [country] = defineField("country");
   const [isOfficeBased] = defineField("is_office_based");
 
-  watch(formData, () => {
-    if (formData.value) {
-      originalPaidLeavesMax.value = formData.value.paid_leaves_max;
-      setValues({
-        ...formData.value
-      });
-    }
-  });
+  // watch(formData, () => {
+  //   if (formData.value) {
+  //     originalPaidLeavesMax.value = formData.value.paid_leaves_max;
+  //     setValues({
+  //       ...formData.value
+  //     });
+  //   }
+  // });
 
   watch(paidLeavesMax, (newVal) => {
     if (originalPaidLeavesMax.value !== null) {
@@ -215,6 +236,7 @@
             v-model:firstName="firstName"
             v-model:country="country"
             v-model:password="password"
+            v-model:passwordConfirmation="passwordConfirm"
             :paidLeavesLeft="paidLeavesLeft"
             :errors="errors"
             :avatar="formData?.avatar_thumbnail"

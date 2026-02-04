@@ -2,6 +2,7 @@
 
 namespace App\Applications\User\Model;
 
+use App\Applications\LeaveRequest\Model\LeaveRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -114,6 +115,15 @@ class User extends Authenticatable implements HasMedia
     {
         // Return the URL of the first media item in the 'avatars' collection
         return $this->getFirstMediaUrl('avatars') ?: null;
+    }
+    public function leaveRequests()
+    {
+        return $this->hasMany(LeaveRequest::class, 'user_id');
+    }
+
+    public function leaveRequestsToApprove()
+    {
+        return $this->hasMany(LeaveRequest::class, 'request_to');
     }
 
     /**

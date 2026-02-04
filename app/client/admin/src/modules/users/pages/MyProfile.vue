@@ -14,7 +14,6 @@
   } from "../../../components";
   import {
     UserFormBasicInfoTab,
-    UserFormPasswordTab,
     UserFormCalendarTab,
     UserFormLeaveDaysTab,
     UserFormDocumentsTab
@@ -89,6 +88,7 @@
         is_office_based: value.is_office_based,
         private_id: value.private_id,
         position: value.position,
+        password: "",
       });
     }
   });
@@ -144,6 +144,7 @@
             v-model:country="country"
             v-model:privateId="privateId"
             v-model:position="position"
+            v-model:password="password"
             :paidLeavesLeft="paidLeavesLeft"
             :isEdit="true"
             :isMyProfile="true"
@@ -151,9 +152,6 @@
             :avatar="formData?.avatar_thumbnail"
             @upload-avatar="uploadAvatarHandler"
           />
-        </TabbedContentTab>
-        <TabbedContentTab v-if="auth.user().role !== 4" :label="'Password'" id="change-password">
-          <UserFormPasswordTab v-model:password="password" :isEdit="true"/>
         </TabbedContentTab>
         <TabbedContentTab v-if="auth.user().role !== 4" :label="'Paid Vacation Days'" id="leave-days">
           <UserFormLeaveDaysTab

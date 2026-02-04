@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Applications\Pagination\StarterPaginator;
+use App\Applications\User\Model\User;
+use App\Observers\UserObserver;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\ServiceProvider;
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        User::observe(UserObserver::class);
     }
 }
