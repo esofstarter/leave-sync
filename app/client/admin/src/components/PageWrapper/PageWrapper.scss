@@ -9,7 +9,6 @@ $contentPadding: var(--dui-spacing-4);
     &__content {
         padding: $contentPadding;
         flex: 1;
-        overflow: hidden auto;
     }
 
     &__subheader {

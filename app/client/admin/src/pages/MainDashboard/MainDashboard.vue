@@ -154,18 +154,21 @@
             <PortletHeadLabel> Paid Leaves Left </PortletHeadLabel>
           </PortletHead>
           <PortletBody>
+           <div class="table-scroll">
             <table>
               <tr>
                 <th>No.</th>
                 <th>Name</th>
                 <th>Days Left</th>
               </tr>
-              <tr v-for="(user, index) in users" :key="index">
+
+              <tr v-for="(user, index) in users" :key="user.id || index">
                 <td>{{ index + 1 }}.</td>
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.paid_leaves_left }}</td>
               </tr>
             </table>
+           </div>
           </PortletBody>
         </PortletComponent>
       </div>
@@ -189,5 +192,15 @@
   padding-right: 8px;  /* optional: space for scrollbar */
 }
 
+.table-scroll {
+  max-height: 369px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+/* Optional: prevent ugly wrapping */
+.table-scroll table {
+  width: 100%;
+}
 
 </style>
