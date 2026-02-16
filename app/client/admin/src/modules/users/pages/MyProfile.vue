@@ -1,60 +1,64 @@
 <script lang="ts" setup>
-  import { IconSave, IconArrowleft } from "@starter-core/icons";
-  import { useAuth } from "@websanova/vue-auth/src/v3.js";
-  import { useForm } from "vee-validate";
-  import { watch, computed, ref } from "vue";
-  import { useI18n } from "vue-i18n";
-  import { useRoute } from "vue-router";
-  import {
-    TabbedContent,
-    TabbedContentTab,
-    PageWrapper,
-    PAGE_WRAPPER_SLOTS,
-    SubheaderTitle,
-  } from "../../../components";
-  import {
-    UserFormBasicInfoTab,
-    UserFormCalendarTab,
-    UserFormLeaveDaysTab,
-    UserFormDocumentsTab
-  } from "../components";
-  import { useUsersForm } from "../composables";
-  import type { UserFormItem } from "../types";
-  import { DashButton, DashLink } from "@starter-core/dash-ui/src";
+import { IconSave, IconArrowleft } from "@starter-core/icons";
+import { useAuth } from "@websanova/vue-auth/src/v3.js";
+import { useForm } from "vee-validate";
+import { watch, computed, ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
+import {
+  TabbedContent,
+  TabbedContentTab,
+  PageWrapper,
+  PAGE_WRAPPER_SLOTS,
+  SubheaderTitle,
+} from "../../../components";
+import {
+  UserFormBasicInfoTab,
+  UserFormCalendarTab,
+  UserFormLeaveDaysTab,
+  UserFormDocumentsTab,
+} from "../components";
+import { useUsersForm } from "../composables";
+import type { UserFormItem } from "../types";
+import { DashButton, DashLink } from "@starter-core/dash-ui/src";
 
-  const { t } = useI18n();
-  const basicInfoLabeel = t("users.basic.information");
-  const changePasswordLabel = t("users.password.change");
-  const route = useRoute();
-  const auth = useAuth();
+const { t } = useI18n();
+const basicInfoLabeel = t("users.basic.information");
+const changePasswordLabel = t("users.password.change");
+const route = useRoute();
+const auth = useAuth();
 
-  const userId = Number(auth.user().id);
-  const newFile = ref<File | null>(null);
+const userId = computed(() => Number(auth.user()?.id || 0));
 
-  const isUserWriter = auth.user().permissions_array.includes("write_users")
-    ? true
-    : false;
+const viewKey = ref(0);
 
-  const {
-    isLoading,
-    data: formData,
-    createUser,
-    updateUser,
-    uploadAvatar,
-  } = useUsersForm(userId);
-  const validationSchema = {
-    last_name(value: string) {
-      if (value?.length >= 3) return true;
-      return "Last name needs to be at least 3 characters.";
-    },
-    first_name(value: string) {
-      if (value?.length >= 3) return true;
-      return "First name needs to be at least 3 characters.";
-    },
-    email(value: string) {
-      if (value?.length >= 5) return true;
-      return "Email needs to be at least 5 characters.";
-    },
+const newFile = ref<File | null>(null);
+
+const isUserWriter = computed(() =>
+  (auth.user()?.permissions_array || []).includes("write_users")
+);
+
+const {
+  isLoading,
+  data: formData,
+  createUser,
+  updateUser,
+  uploadAvatar,
+} = useUsersForm(userId.value);
+
+const validationSchema = {
+  last_name(value: string) {
+    if (value?.length >= 3) return true;
+    return "Last name needs to be at least 3 characters.";
+  },
+  first_name(value: string) {
+    if (value?.length >= 3) return true;
+    return "First name needs to be at least 3 characters.";
+  },
+  email(value: string) {
+    if (value?.length >= 5) return true;
+    return "Email needs to be at least 5 characters.";
+  },
 
     // Password: only required when creating user OR when user typed something
     password(value: string) {
@@ -124,8 +128,24 @@
         password_confirmation: "",
       });
     }
-  });
+  },
+  { immediate: true }
+);
 
+onMounted(() => {
+  if (userId.value === 0) {
+    const stop = watch(
+      userId,
+      (id) => {
+        if (id > 0) {
+          viewKey.value++; // triggers remount -> useUsersForm(userId.value) runs with real id
+          stop();
+        }
+      },
+      { immediate: true }
+    );
+  }
+});
 
   const [id] = defineField("id");
   const [lastName] = defineField("last_name");
@@ -145,7 +165,7 @@
 </script>
 
 <template>
-  <PageWrapper>
+  <PageWrapper :key="viewKey">
     <template #[PAGE_WRAPPER_SLOTS.subheaderMain]>
       <SubheaderTitle
         title="My Profile"
