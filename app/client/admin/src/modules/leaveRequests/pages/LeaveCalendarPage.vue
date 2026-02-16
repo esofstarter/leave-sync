@@ -137,7 +137,7 @@
 </script>
 
 <template>
-  <PageWrapper class="calendar_main_div">
+  <PageWrapper class="calendar_main_div" style="overflow: none;">
     <div style="width: 100%;">
       <FullCalendar :options="calendarOptions" />
     </div>
