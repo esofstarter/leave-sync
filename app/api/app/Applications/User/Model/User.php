@@ -101,10 +101,11 @@ class User extends Authenticatable implements HasMedia
         return $this->getAllPermissions()->pluck('name')->toArray();
     }
 
-    public function getRoleAttribute()
+    public function getRoleAttribute(): ?int
     {
-        return $this->roles()->first()->id;
+        return $this->roles()->first()?->id;
     }
+
 
     /**
      * Get the URL of the user's avatar.
