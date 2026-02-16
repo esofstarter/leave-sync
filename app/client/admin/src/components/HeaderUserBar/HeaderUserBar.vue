@@ -51,7 +51,7 @@
           v-if="avatarSource"
           alt="avatar"
           :src="avatarSource"
-          style="width: 50px; height: 50px"
+          style="width: 34px; height: 34px"
         />
         <BadgeComponent v-else font-weight="bold" size="lg">
           {{ userFirstLetter }}
