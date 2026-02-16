@@ -137,7 +137,7 @@
 </script>
 
 <template>
-  <PageWrapper class="calendar_main_div" style="overflow: none;">
+  <PageWrapper class="calendar_main_div">
     <div style="width: 100%;">
       <FullCalendar :options="calendarOptions" />
     </div>
@@ -187,5 +187,8 @@
 
   .calendar_main_div.page-wrapper__content {
     padding-top: 0 !important;
+  }
+  :deep(.page-wrapper__content) {
+    overflow: visible !important;
   }
 </style>
