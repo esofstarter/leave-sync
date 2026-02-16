@@ -101,9 +101,9 @@ class User extends Authenticatable implements HasMedia
         return $this->getAllPermissions()->pluck('name')->toArray();
     }
 
-    public function getRoleAttribute(): ?int
+    public function getRoleAttribute(): int
     {
-        return $this->roles()->first()?->id;
+        return $this->roles()->value('roles.id') ?? 3;
     }
 
 
