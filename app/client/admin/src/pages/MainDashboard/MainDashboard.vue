@@ -183,7 +183,6 @@
 
 .main_dashboard-data {
   display: flex;
-  flex-direction: column;
   gap: 20px;
 
   /* make it scroll */
