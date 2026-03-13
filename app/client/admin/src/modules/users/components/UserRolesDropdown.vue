@@ -9,9 +9,6 @@
   const { isLoading: isFetchingRoles, data: roles } = useUserRoles();
   const role = defineModel("role", { required: true });
 
-  const filteredRoles = computed(() => {
-    return (roles.value || []).filter(r => r.id !== 4);
-  });
 </script>
 <template>
   <form-dropdown
@@ -19,7 +16,7 @@
     v-model="role"
     :readonly="false"
     id="role"
-    :options="filteredRoles"
+    :options="roles"
     :label="t('users.roles.label')"
     is-inline
   />

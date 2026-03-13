@@ -243,17 +243,35 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         $recipients = $this->getRecipients($leaveRequest);
         $document = Document::where('leave_request_id', $leaveRequest->id)->first();
         $documentPath = $document ? Storage::disk('public')->path($document->file_path) : null;
-
+        
         if ($isUpdate) {
-            Mail::to($recipients)->send(new LeaveRequestConfirmationUpdate($leaveRequest, $documentPath));
+            $mail = Mail::to($recipients)->send(new LeaveRequestConfirmationUpdate($leaveRequest, $documentPath));
             return;
         }
 
-        match ($leaveRequest->is_confirmed) {
-            1 => Mail::to($recipients)->send(new LeaveRequestDeclining($leaveRequest)),
-            2 => Mail::to($recipients)->send(new LeaveRequestConfirmation($leaveRequest, $documentPath)), // With attachment
+        $mailable = match ($leaveRequest->is_confirmed) {
+            1 => new LeaveRequestDeclining($leaveRequest),
+            2 => new LeaveRequestConfirmation($leaveRequest, $documentPath),
             default => null,
         };
+        
+        if ($mailable) {
+            $mail = Mail::to($recipients);
+            
+            // CC collaborators for  approved vacation/sick leave requests
+            if ($leaveRequest->is_confirmed == 2 && in_array($leaveRequest->leave_type_id, [3, 4])) {
+                $collaboratorEmails = User::role(User::COLLABORATOR)
+                    ->withoutTrashed()
+                    ->pluck('email')
+                    ->toArray();
+                
+                if (!empty($collaboratorEmails)) {
+                    $mail = $mail->cc($collaboratorEmails);
+                }
+            }
+            
+            $mail->send($mailable);
+        }
     }
 
     private function sendRequestCancelationEmail(LeaveRequest $leaveRequest)
