@@ -305,12 +305,16 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
                 ...User::role(User::ADMIN)->where('email', '!=', 'admin@esof.net')->pluck('email')->toArray()
             ]);
         } else if ($leaveRequest->is_confirmed == 1) {
-            return $requestedUser->email;
+            return array_filter([
+                $requestedUser?->email,
+            ]);
         } else if ($leaveRequest->is_confirmed == 0) {
-            return $requestToUserEmail;
+            return array_filter([
+                $requestToUserEmail,
+            ]);
         }
 
-        
+        return [];
     }
     
     private function createLeaveRequestPDF(User $user, LeaveRequest $leaveRequest): void

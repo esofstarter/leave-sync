@@ -63,6 +63,7 @@ class NewLeaveRequestRequest extends ApiFormRequest
     private function hasExistingLeaveRequest($user, $start_date, $end_date)
     {
         return LeaveRequest::where('user_id', $user->id)
+            ->whereIn('is_confirmed', [0, 2]) // Only check pending (0) and approved (2) requests, not declined (1)
             ->where(function ($query) use ($start_date, $end_date) {
                 $query->whereBetween('start_date', [$start_date, $end_date])
                       ->orWhereBetween('end_date', [$start_date, $end_date])
