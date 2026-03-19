@@ -81,12 +81,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ url('/build/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
+            <img src="{{ url('/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
             <h1 class="header-title">Leave Request Declined</h1>
         </div>
         
         <div class="content">
-            <p class="greeting">Hi {{ $leaveRequest->user->first_name }},</p>
+            <p class="greeting">Hello,</p>
             
             <div class="message">
                 <p>Your leave request has been <strong>declined</strong>. Please contact your manager for more information.</p>

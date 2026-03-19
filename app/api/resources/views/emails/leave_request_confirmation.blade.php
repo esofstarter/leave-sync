@@ -105,12 +105,12 @@
 @endphp
     <div class="container">
         <div class="header">
-            <img src="{{ url('/build/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
+            <img src="{{ url('/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
             <h1 class="header-title">Leave Request Approved</h1>
         </div>
         
         <div class="content">
-            <p class="greeting">Hi {{ $leaveRequest->requestToUser->first_name }},</p>
+            <p class="greeting">Hello,</p>
             
             <p>Great news! The leave request has been approved and confirmed.</p>
             

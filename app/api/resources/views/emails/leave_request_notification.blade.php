@@ -116,13 +116,13 @@
 @endphp
     <div class="container">
         <div class="header">
-            <img src="{{ url('/build/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
+            <img src="{{ url('/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
             <h1 class="header-title">New Leave Request</h1>
             <span class="badge">Action Required</span>
         </div>
         
         <div class="content">
-            <p class="greeting">Hi {{ Auth::user()->first_name ?? 'Manager' }},</p>
+            <p class="greeting">Hello,</p>
             
             <p>A new leave request has been submitted and requires your approval or review.</p>
             

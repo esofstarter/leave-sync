@@ -103,7 +103,7 @@
 @endphp
     <div class="container">
         <div class="header">
-            <img src="{{ url('/build/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
+            <img src="{{ url('/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
             <h1 class="header-title">Leave Request Approved</h1>
             <p class="header-subtitle">For Internal Accounting Records</p>
         </div>

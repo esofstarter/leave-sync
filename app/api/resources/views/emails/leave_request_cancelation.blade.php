@@ -91,12 +91,12 @@
 @endphp
     <div class="container">
         <div class="header">
-            <img src="{{ url('/build/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
+            <img src="{{ url('/images/esof_logo.png') }}" alt="ESOF Logo" class="logo">
             <h1 class="header-title">Leave Request Cancelled</h1>
         </div>
         
         <div class="content">
-            <p class="greeting">Hi {{ $leaveRequest->requestToUser->first_name ?? 'Manager' }},</p>
+            <p class="greeting">Hello,</p>
             
             <p>A previously approved leave request has been cancelled.</p>
             

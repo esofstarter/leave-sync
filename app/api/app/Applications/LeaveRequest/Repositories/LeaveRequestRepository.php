@@ -259,7 +259,7 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
             $mail = Mail::to($recipients);
             
             // CC collaborators for  approved vacation/sick leave requests
-            if ($leaveRequest->is_confirmed == 2 && in_array($leaveRequest->leave_type_id, [3, 4])) {
+            if ($leaveRequest->is_confirmed == 2 && in_array($leaveRequest->leave_type_id, [1, 2, 3, 4])) {
                 $collaboratorEmails = User::role(User::COLLABORATOR)
                     ->withoutTrashed()
                     ->pluck('email')
@@ -302,7 +302,7 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
             return array_filter([
                 $requestedUser?->email,
                 $requestToUserEmail,
-                ...User::role(User::ADMIN)->pluck('email')->toArray()
+                ...User::role(User::ADMIN)->where('email', '!=', 'admin@esof.net')->pluck('email')->toArray()
             ]);
         } else if ($leaveRequest->is_confirmed == 1) {
             return $requestedUser->email;
