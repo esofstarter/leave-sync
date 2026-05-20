@@ -16,27 +16,30 @@ use App\Applications\LeaveRequest\Mail\{
 };
 use App\Applications\Pagination\StarterPaginator;
 use App\Applications\LeaveRequest\Model\LeaveRequest;
+use App\Applications\LeaveRequest\Services\RedmineTimeLoggerServiceInterface;
 use App\Applications\Document\Model\Document;
 use App\Applications\NationalHoliday\Model\NationalHoliday;
-use Illuminate\Support\Facades\{Mail, Auth};
+use Illuminate\Support\Facades\{Mail, Auth, Storage, Log};
 use DateTime;
 use setasign\Fpdi\Fpdi;
-use Storage;
 use Illuminate\Support\Facades\Route;
 use setasign\Fpdi\Tcpdf\Fpdi as TcpdfFpdi;
 
 /**
  * @property LeaveRequest $leaveRequest
  * @property User $user
+ * @property RedmineTimeLoggerServiceInterface $redmineTimeLogger
  */
 class LeaveRequestRepository implements LeaveRequestRepositoryInterface
 {
     public function __construct(
         LeaveRequest $leaveRequest,
-        User $user
+        User $user,
+        RedmineTimeLoggerServiceInterface $redmineTimeLogger
     ) {
         $this->leaveRequest = $leaveRequest;
         $this->user = $user;
+        $this->redmineTimeLogger = $redmineTimeLogger;
     }
 
     private const COLUMNS_MAP = [
@@ -175,6 +178,12 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         if ($leaveRequestUser->country == 1) {
             $this->sendConfirmationAccountentsEmail($leaveRequest);
         }
+        
+        // Log time entries in Redmine for approved leaves
+        if ($isConfirmed == 2 && in_array($leaveRequest->leave_type_id, [1, 2, 3, 4])) {
+            $this->redmineTimeLogger->logLeaveTimeEntries($leaveRequest);
+        }
+        
         // $this->createRedmineIssueOnConfirm($leaveRequest);
         return $leaveRequest;
     }
@@ -539,13 +548,13 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
 
         if ($response === false || $httpCode !== 201) {
             $errorMessage = curl_error($ch);
-            \Log::error("Failed to create Redmine issue. Error: " . $errorMessage . " Response: " . $response);
+            Log::error("Failed to create Redmine issue. Error: " . $errorMessage . " Response: " . $response);
             throw new \Exception("Redmine issue creation failed. HTTP Code: $httpCode. Error: $errorMessage");
         }
 
         curl_close($ch);
 
-        \Log::info("Redmine issue created successfully. Response: " . $response);
+        Log::info("Redmine issue created successfully. Response: " . $response);
         return json_decode($response, true);
     }
 

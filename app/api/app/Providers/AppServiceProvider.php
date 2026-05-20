@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Applications\Pagination\StarterPaginator;
 use App\Applications\User\Model\User;
+use App\Applications\LeaveRequest\Services\RedmineTimeLoggerServiceInterface;
+use App\Applications\LeaveRequest\Services\RedmineTimeLoggerService;
 use App\Observers\UserObserver;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->alias(StarterPaginator::class, LengthAwarePaginator::class); // Eloquent uses the class instead of the contract 🤔
         $this->app->alias(StarterPaginator::class, LengthAwarePaginatorContract::class);
+        
+        // Bind Redmine time logger interface to implementation
+        $this->app->bind(RedmineTimeLoggerServiceInterface::class, RedmineTimeLoggerService::class);
     }
 
     /**
