@@ -155,10 +155,10 @@ class RedmineTimeLoggerService implements RedmineTimeLoggerServiceInterface
      */
     private function createTimeEntry(int $taskId, string $date, string $comment, float $hours = 8.0): bool
     {
-        $apiUrl = env('REDMINE_API_URL');
-        $apiKey = env('REDMINE_API_KEY');
-        $botUserId = env('REDMINE_BOT_USER_ID');
-        $activityId = env('REDMINE_DEFAULT_ACTIVITY_ID', 9);
+        $apiUrl = config('services.redmine.api_url');
+        $apiKey = config('services.redmine.api_key');
+        $botUserId = config('services.redmine.bot_user_id');
+        $activityId = config('services.redmine.default_activity_id');
 
         if (!$apiUrl || !$apiKey) {
             Log::error("Redmine API credentials not configured");

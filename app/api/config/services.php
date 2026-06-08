@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'redmine' => [
+        'api_url' => env('REDMINE_API_URL'),
+        'api_key' => env('REDMINE_API_KEY'),
+        'bot_user_id' => env('REDMINE_BOT_USER_ID'),
+        'default_activity_id' => env('REDMINE_DEFAULT_ACTIVITY_ID', 9),
+    ],
+
 ];

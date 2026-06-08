@@ -152,24 +152,30 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
             ]);
         }
 
-        $leaveDays = $this->calculateDays($leaveRequestData, $leaveRequest->user);
+        // Calculate days based on incoming data (for updating record), then persist
+        $calculatedDays = $this->calculateDays($leaveRequestData, $leaveRequest->user);
 
         $leaveRequest->update([
             ...$leaveRequestData->toArray(),
             'is_confirmed' => $isConfirmed,
             'confirmed_by' => $user->id,
-            'days' => $leaveDays,
+            'days' => $calculatedDays,
             'user_id' => $leaveRequest->user_id
         ]);
+
+        // Refresh model to ensure we use persisted values (leave_type_id, days)
+        $leaveRequest->refresh();
 
         if ($isConfirmed == 2) {
             if (in_array($leaveRequest->leave_type_id, [3, 4])) {
                 $this->createLeaveRequestPDF($leaveRequest->user, $leaveRequest);
             }
 
-            if ($leaveRequest->user && $leaveRequestData->leave_type_id == 3) {
+            // Deduct paid leaves only for paid leave type (3) using the stored days value.
+            if ($leaveRequest->user && $leaveRequest->leave_type_id == 3) {
+                $finalLeaveDays = (int) ($leaveRequest->days ?? $calculatedDays);
                 $leaveRequestUser->update([
-                    'paid_leaves_left' => max(0, $leaveRequestUser->paid_leaves_left - $leaveDays)
+                    'paid_leaves_left' => max(0, $leaveRequestUser->paid_leaves_left - $finalLeaveDays)
                 ]);
             }
         }
@@ -180,9 +186,9 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         }
         
         // Log time entries in Redmine for approved leaves
-        if ($isConfirmed == 2 && in_array($leaveRequest->leave_type_id, [1, 2, 3, 4])) {
-            $this->redmineTimeLogger->logLeaveTimeEntries($leaveRequest);
-        }
+        // if ($isConfirmed == 2 && in_array($leaveRequest->leave_type_id, [1, 2, 3, 4])) {
+        //     $this->redmineTimeLogger->logLeaveTimeEntries($leaveRequest);
+        // }
         
         // $this->createRedmineIssueOnConfirm($leaveRequest);
         return $leaveRequest;

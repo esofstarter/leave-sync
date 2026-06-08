@@ -7,6 +7,7 @@
   import { FormInput } from "@starter-core/dash-ui/src";
   import FlatPickr from 'vue-flatpickr-component'
   import 'flatpickr/dist/flatpickr.css'
+import { UserRecord } from "../types";
 
   const { t } = useI18n();
   const leaveTypes = ref([]);
@@ -29,7 +30,7 @@
   const minDate = computed(() => today.toISOString().split("T")[0]);
   const maxDate = computed(() => `${currentYear + 1}-12-31`);
 
-  const props = defineProps(["user", "isEditPage"]);
+  const props = defineProps(["user", "isEditPage", "requesterName"]);
 
   const fetchLeaveTypes = async () => {
     try {
@@ -103,6 +104,10 @@
 <template>
   <div class="kt-section">
     <div class="kt-section__body">
+        <div class="form-group requester" v-if="props.requesterName && isEditPage">
+          <label class="form-group__label">Requested by:</label>
+          <div class="requester__name">{{ props.requesterName ? props.requesterName : (props.user.first_name + ' ' + props.user.last_name) }}</div>
+        </div>
       <leave-requests-dropdown
         v-if="isEditPage"
         v-model:model="requestTo"
@@ -175,6 +180,20 @@
 
     .dates_from {
       margin-right: 100px;
+    }
+  }
+
+  .requester {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .form-group__label {
+      font-weight: 600;
+    }
+
+    .requester__name {
+      color: #333;
     }
   }
 </style>

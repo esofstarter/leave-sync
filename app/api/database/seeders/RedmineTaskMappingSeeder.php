@@ -19,22 +19,22 @@ class RedmineTaskMappingSeeder extends Seeder
         $mappings = [
             [
                 'leave_type_id' => 1, // Sick leave (unpaid)
-                'redmine_task_id' => 0, // Update with actual Redmine task ID
+                'redmine_task_id' => 50587, // Update with actual Redmine task ID
                 'is_active' => true,
             ],
             [
                 'leave_type_id' => 2, // Sick leave (paid)
-                'redmine_task_id' => 0, // Update with actual Redmine task ID
+                'redmine_task_id' => 50588, // Update with actual Redmine task ID
                 'is_active' => true,
             ],
             [
                 'leave_type_id' => 3, // Vacation (paid)
-                'redmine_task_id' => 0, // Update with actual Redmine task ID
+                'redmine_task_id' => 50589, // Update with actual Redmine task ID
                 'is_active' => true,
             ],
             [
                 'leave_type_id' => 4, // Vacation (unpaid)
-                'redmine_task_id' => 0, // Update with actual Redmine task ID
+                'redmine_task_id' => 50590, // Update with actual Redmine task ID
                 'is_active' => true,
             ],
         ];

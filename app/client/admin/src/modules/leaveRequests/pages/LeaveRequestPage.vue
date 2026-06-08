@@ -131,6 +131,14 @@
         (auth.user().id !== userId.value || auth.user().id !== requestTo.value)
       ),
   );
+
+  const requesterName = computed(() => {
+    if (formData && formData.value && formData.value.user && formData.value.user.first_name) {
+      return `${formData.value.user.first_name} ${formData.value.user.last_name}`;
+    }
+    if (myUser && myUser.first_name) return `${myUser.first_name} ${myUser.last_name}`;
+    return "";
+  });
 </script>
 
 <template>
@@ -178,6 +186,7 @@
             :errors="errors"
             :user="myUser"
             :isEditPage="isEditPage"
+            :requester-name="requesterName"
           />
         </TabbedContentTab>
         <TabbedContentTab

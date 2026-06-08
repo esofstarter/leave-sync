@@ -165,7 +165,6 @@
         is-inline
       />
       <form-input
-        v-if="isMyProfile"
         v-model="position"
         name="position"
         :label="t('users.position.label')"
