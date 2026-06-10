@@ -91,7 +91,6 @@ const validationSchema = {
       paid_leaves_left: 0,
       country: 1,
       private_id: "",
-      position: "",
       password: "",
       password_confirmation: "",
     },
@@ -123,7 +122,6 @@ const validationSchema = {
         country: value.country,
         is_office_based: value.is_office_based,
         private_id: value.private_id,
-        position: value.position,
         password: "",
         password_confirmation: "",
       });
@@ -160,7 +158,6 @@ onMounted(() => {
   const [country] = defineField("country");
   const [isOfficeBased] = defineField("is_office_based");
   const [privateId] = defineField("private_id");
-  const [position] = defineField("position");
   
 </script>
 
@@ -198,7 +195,6 @@ onMounted(() => {
             v-model:firstName="firstName"
             v-model:country="country"
             v-model:privateId="privateId"
-            v-model:position="position"
             v-model:password="password"
             v-model:password-confirmation="passwordConfirmation"
             :paidLeavesLeft="paidLeavesLeft"

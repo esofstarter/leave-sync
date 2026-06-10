@@ -344,7 +344,32 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         };
 
         $fullNameCyr = trim($toCyr((string) $user->first_name) . ' ' . $toCyr((string) $user->last_name));
-        $positionCyr = trim($toCyr((string) ($user->position ?? '')));
+
+        // Determine user's country early so we can choose localized role titles for the BG template
+        $userCountry = (int) $user->country;
+
+        // Derive position from user's role (preferred) — fallback to stored `position` if mapping missing
+        $roleId = $user->getRoleAttribute();
+        if ($userCountry === 1) {
+            // MK template: use Macedonian role titles
+            $roleMap = [
+                1 => 'Администратор',
+                2 => 'Раководител',
+                3 => 'Програмер',
+                4 => 'Соработник',
+            ];
+        } else {
+            // BG template: use Bulgarian titles for roles
+            $roleMap = [
+                1 => 'Администратор',
+                2 => 'Проектен ръководител',
+                3 => 'Програмист',
+                4 => 'Сътрудник',
+            ];
+        }
+
+        $positionSource = $roleMap[$roleId] ?? ($user->position ?? '');
+        $positionCyr = trim($toCyr((string) $positionSource));
 
         $requestToUser = $leaveRequest->requestToUser; // assumes relation is loaded/available
         $fullNameRequestCyr = $requestToUser
@@ -418,7 +443,10 @@ class LeaveRequestRepository implements LeaveRequestRepositoryInterface
         // 6) Write text per template (start from your original coordinates; reduce font for name if needed)
         if ($userCountry === 1) {
             // MK TEMPLATE (revert to your original block, only smaller font + bounded name)
-            $put($pdf, 112 , 73, 90, $fullNameCyr, 'L', 9);
+            // Nudge name slightly lower and position slightly higher for better alignment
+            $put($pdf, 112 , 75, 90, $fullNameCyr, 'L', 9);
+            $put($pdf, 129, 80, 70, $positionCyr, 'L', 8.5);
+
 
             $putCell($pdf, 56, 116.5, 18, (string) ($leaveDays ?? 'N/A'), 'C', 8.5);
             $putCell($pdf, 121, 116.5, 28, (string) ($start_date ?? 'N/A'), 'C', 8.5);

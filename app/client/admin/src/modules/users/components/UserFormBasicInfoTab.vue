@@ -22,7 +22,6 @@
   const email = defineModel<string>("email", { default: "" });
 
   const privateId = defineModel<string | null>("privateId", { default: null });
-  const position = defineModel<string | null>("position", { default: null });
   const password = defineModel("password", { required: true });
   const passwordConfirmation = defineModel<string>("passwordConfirmation", { default: "" });
   const confirmPassword = ref(""); // Store confirm password field
@@ -164,13 +163,7 @@
         :error="errors.private_id"
         is-inline
       />
-      <form-input
-        v-model="position"
-        name="position"
-        :label="t('users.position.label')"
-        :error="errors.position"
-        is-inline
-      />
+      
     </div>
   </div>
 </template>
