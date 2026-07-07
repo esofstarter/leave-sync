@@ -91,7 +91,6 @@ import { UserRecord } from "../types";
 
   const startConfig = computed(() => ({
     ...baseConfig.value,
-    minDate: minDate.value,
     maxDate: maxDate.value,
   }))
 
