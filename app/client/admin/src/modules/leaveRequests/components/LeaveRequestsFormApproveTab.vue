@@ -21,7 +21,7 @@
 
   const auth = useAuth();
 
-  const props = defineProps(["user"]);
+  const props = defineProps(["user", "requesterName"]);
 
   const fetchLeaveTypes = async () => {
     try {
@@ -77,6 +77,10 @@
 <template>
   <div class="kt-section">
     <div class="kt-section__body">
+      <div class="form-group requester" v-if="props.requesterName">
+          <label class="form-group__label">Requested by:</label>
+          <div class="requester__name">{{ props.requesterName ? props.requesterName : (props.user.first_name + ' ' + props.user.last_name) }}</div>
+      </div>
       <leave-requests-dropdown
         class="noClick"
         v-model:model="requestTo"
@@ -153,5 +157,18 @@
 
   .noClick {
     pointer-events: none;
+  }
+  .requester {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .form-group__label {
+      font-weight: 600;
+    }
+
+    .requester__name {
+      color: #333;
+    }
   }
 </style>

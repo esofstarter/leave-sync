@@ -201,6 +201,7 @@
             v-model:endDate="endDate"
             v-model:reason="reason"
             v-model:requestTo="requestTo"
+            :requester-name="requesterName"
             :user="auth.user()"
           />
         </TabbedContentTab>
